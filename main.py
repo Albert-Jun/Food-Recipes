@@ -5,6 +5,6 @@ def extract_recipes(data):
         file = json.load(f)
     difficulty_so_far = set()
     for lines in file:
-        if lines['rattings'] not in difficulty_so_far:
-            difficulty_so_far.add(lines['rattings'])
+        if lines['serves'] not in difficulty_so_far:
+            difficulty_so_far.add(lines['serves'])
     return difficulty_so_far
