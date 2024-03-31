@@ -1,7 +1,11 @@
+import json
 import sys
-from typing import Optional
+import textwrap
+import webbrowser
+import io
 
 import pygame
+import requests
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
@@ -12,22 +16,34 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Sustainable Table')
 pygame.display.set_icon(logo_img)
 
-font_path = 'assets/GROBOLD.ttf'  # Replace with the actual path to your font file
-font_size = 10
+GROBOLD = 'assets/GROBOLD.ttf'
+small_font_size = 14
+medium_font_size = 20
 
 # Load the custom font
-custom_font = pygame.font.Font(font_path, font_size)
+font_grobold_small = pygame.font.Font(GROBOLD, small_font_size)
+font_grobold_medium = pygame.font.Font(GROBOLD, medium_font_size)
 
+# Buttons
 start_img = pygame.image.load('assets/buttons/start_btn.png').convert_alpha()
 next_img = pygame.image.load('assets/buttons/next_btn.png').convert_alpha()
 food_img = pygame.image.load('assets/buttons/food_btn.png').convert_alpha()
+food_name_img = pygame.image.load('assets/buttons/food_name_btn.png').convert_alpha()
+food_desc_img = pygame.image.load('assets/buttons/food_desc_btn.png').convert_alpha()
+recipe_img = pygame.image.load('assets/buttons/recipe_btn.png').convert_alpha()
+
+# Buttons Hover
 start_img_hover = pygame.image.load('assets/buttons/start_btn_hover.png').convert_alpha()
 next_img_hover = pygame.image.load('assets/buttons/next_btn_hover.png').convert_alpha()
 food_img_hover = pygame.image.load('assets/buttons/food_btn_hover.png').convert_alpha()
+recipe_img_hover = pygame.image.load('assets/buttons/recipe_btn_hover.png').convert_alpha()
+
+# Toggle Buttons
 toggle_img = pygame.image.load('assets/buttons/toggle_btn.png').convert_alpha()
 toggle_clicked_img = pygame.image.load('assets/buttons/toggle_btn_clicked.png').convert_alpha()
 toggle_hover_img = pygame.image.load('assets/buttons/toggle_btn_hover.png').convert_alpha()
 toggle_hover_clicked_img = pygame.image.load('assets/buttons/toggle_btn_clicked_hover.png').convert_alpha()
+
 subcat_img = pygame.image.load('assets/subcat.png')
 difficult_img = pygame.image.load('assets/difficult.png')
 serves_img = pygame.image.load('assets/serves.png')
@@ -122,7 +138,39 @@ class Toggle(Button):
         return self.clicked
 
     def set_allowed_click(self, allow):
+        """
+        set when a click is allowed
+        """
         self.click_pending = allow
+
+
+class TextButton(Button):
+    """Button with text, image, and star rating that changes text color on hover."""
+
+    def __init__(self, name, x, y, image, image_pressed, scale, text, font, text_color):
+        super().__init__(name, x, y, image, image_pressed, scale)
+        self.text = text
+        self.font = font
+        self.text_color = text_color
+
+        # Initial text color
+        self.current_text_color = text_color
+        # Render the text
+        self.text_surface = self.font.render(self.text, True, self.current_text_color)
+        # Calculate text position to center it on the button, adjusting for the left image
+        self.text_x = self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2
+        self.text_y = self.rect.y + (self.rect.height - self.text_surface.get_height()) // 2
+
+    def draw(self):
+        """
+        Draws the button, text, and star rating on top of it within the button bounds.
+        Adjusts the text color based on mouse hover.
+        """
+        global screen  # Assuming 'screen' is defined globally
+
+        action = super().draw()  # Call the draw method of the base class to draw the button
+        screen.blit(self.text_surface, (self.text_x, self.text_y))
+        return action
 
 
 class TextImageButton(Button):
@@ -136,7 +184,8 @@ class TextImageButton(Button):
         self.text_color = text_color
         self.text_hover_color = text_hover_color
         self.rating = rating  # Integer rating from 1 to 5
-        self.left_image = pygame.transform.scale(left_image, (80, 80))  # Load the image to display to the left of the text
+        self.left_image = pygame.transform.scale(left_image,
+                                                 (80, 80))  # Load the image to display to the left of the text
         self.star_full = pygame.image.load('assets/buttons/stars_full.png')  # Load your full star image
         self.star_empty = pygame.image.load('assets/buttons/stars_empty.png')  # Load your empty star image
 
@@ -147,7 +196,7 @@ class TextImageButton(Button):
         # Calculate text position to center it on the button, adjusting for the left image
         self.text_x = self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2
         self.text_y = self.rect.y + (
-                    self.rect.height - self.text_surface.get_height() - self.star_full.get_height()) // 2
+                self.rect.height - self.text_surface.get_height() - self.star_full.get_height()) // 2
 
     def draw(self):
         """
@@ -179,7 +228,8 @@ class TextImageButton(Button):
 
         # Render the star rating below the text
         stars_x_base = self.text_x + (
-                    self.text_surface.get_width() - 5 * self.star_full.get_width() - 4 * 5) / 2  # Center stars relative to text
+                self.text_surface.get_width() - 5 * self.star_full.get_width() - 4 * 5) / 2
+        # Center stars relative to text
         for i in range(5):
             star_x = stars_x_base + i * (self.star_full.get_width() + 5)  # Adjust spacing as needed
             star_y = self.text_y + self.text_surface.get_height() + 5  # Position stars just below the text
@@ -191,7 +241,67 @@ class TextImageButton(Button):
         return action
 
 
-class MultipleToggle():
+class ButtonDescription(Button):
+    """Extended Button class with text description capability that wraps text to fit inside the button."""
+
+    def __init__(self, name, x, y, image, image_pressed, scale, description, font_path, font_size, text_color):
+        super().__init__(name, x, y, image, image_pressed, scale)
+        self.description = description
+        self.font_path = font_path
+        self.font_size = font_size
+        self.text_color = text_color
+
+        # Load the font
+        self.font = pygame.font.Font(font_path, font_size)
+
+        # Initialize an empty list to hold rendered text surfaces and their positions
+        self.text_surfaces = []
+        self.render_wrapped_text(description, 1000)  # Pass the available width for text
+
+    def render_wrapped_text(self, text, available_width):
+        """Renders wrapped text to fit inside the button."""
+        # Estimate average character width for the current font and size
+        average_char_width = self.font.size("A")[0]
+        max_chars_per_line = max(1, available_width // average_char_width)
+
+        # Use textwrap to wrap the text based on estimated max chars per line
+        wrapped_text = textwrap.wrap(text, width=max_chars_per_line)
+
+        # Clear any existing text surfaces
+        self.text_surfaces.clear()
+
+        # Render each line of wrapped text and store its surface
+        total_text_height = 0
+        for line in wrapped_text:
+            text_surface = self.font.render(line, True, self.text_color)
+            self.text_surfaces.append(text_surface)
+            total_text_height += text_surface.get_height()
+
+        # Adjust starting y position to vertically center the block of text
+        self.text_start_y = self.rect.y + (self.rect.height - total_text_height) // 2
+
+    def draw(self):
+        """
+        Draws the button and the wrapped text description on top of it, ensuring it fits within the button.
+        """
+        action = super().draw()
+
+        # Draw each line of wrapped text
+        current_y = self.text_start_y
+        for text_surface in self.text_surfaces:
+            text_x = self.rect.x + (self.rect.width - text_surface.get_width()) // 2
+            # Assuming 'screen' is globally accessible for drawing
+            global screen
+            screen.blit(text_surface, (text_x, current_y))
+            current_y += text_surface.get_height()
+
+        return action
+
+
+class MultipleToggle:
+    """
+    Multiple toggle buttons Instance
+    """
     def __init__(self, buttons: list):
         self.buttons = buttons
         if any([button.clicked is True for button in self.buttons]):
@@ -204,6 +314,9 @@ class MultipleToggle():
             self.allowed_toggle = True
 
     def get_status(self):
+        """
+
+        """
         return [button.clicked for button in self.buttons]
 
     def allowed_toggle(self):
@@ -214,19 +327,44 @@ class MultipleToggle():
             button.draw()
 
 
+class ButtonWithLink(Button):
+    """Button Instance"""
+
+    def __init__(self, name, x, y, image, image_pressed, scale, link):
+        super().__init__(name, x, y, image, image_pressed, scale)
+        self.link = link
+
+    def draw(self):
+        """
+            Draws
+        """
+        action = False
+        # get mouse position
+        pos = pygame.mouse.get_pos()
+
+        # check mouse is over and clicked ocndition
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked is False:
+                self.clicked = True
+                action = True
+
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        if self.rect.collidepoint(pos):
+            screen.blit(self.image_pressed, (self.rect.x, self.rect.y))
+        else:
+            screen.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
+
+    def get_link(self):
+        return self.link
+
+
 start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
 next_button = Button('next_btn', 400, 500, next_img, next_img_hover, 1 / 2)
 next_button2 = Button('next_btn2', 400, 500, next_img, next_img_hover, 1 / 2)
-food_button1 = TextImageButton('food_btn1', 50, 85, food_img, food_img_hover, 1, 'SAMPLE FOOD1',
-                               custom_font, (0, 0, 0), (255, 255, 255), 1, food1_img)
-food_button2 = TextImageButton('food_btn2', 50, 200, food_img, food_img_hover, 1, 'SAMPLE FOOD2',
-                               custom_font, (0, 0, 0), (255, 255, 255), 2, food2_img)
-food_button3 = TextImageButton('food_btn3', 50, 315, food_img, food_img_hover, 1, 'SAMPLE FOOD3',
-                               custom_font, (0, 0, 0), (255, 255, 255), 3, food3_img)
-food_button4 = TextImageButton('food_btn4', 50, 430, food_img, food_img_hover, 1, 'SAMPLE FOOD4',
-                               custom_font, (0, 0, 0), (255, 255, 255), 4, food4_img)
-food_button5 = TextImageButton('food_btn5', 50, 545, food_img, food_img_hover, 1, 'SAMPLE FOOD5',
-                               custom_font, (0, 0, 0), (255, 255, 255), 5, food5_img)
+
 toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button2 = Toggle('tog_btn2', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
@@ -432,7 +570,7 @@ class Times(Interface):
 
 
 class FoodDisplay(Interface):
-    def __init__(self):
+    def __init__(self, rec_food):
         self.status = True
         self.toggle1 = False
         self.toggle2 = False
@@ -440,27 +578,77 @@ class FoodDisplay(Interface):
         self.toggle4 = False
         self.next = False
         self.first = True
+        self.button = self.make_button(rec_food)
 
-    def run(self):
+    def make_button(self, rec_food):
+        temp_list = []
+        for i in range(len(rec_food)):
+            x = 50
+            y = 0
+            if i == 0:
+                y += 85
+            elif i == 1:
+                y += 200
+            elif i == 2:
+                y += 315
+            elif i == 3:
+                y += 430
+            elif i == 4:
+                y += 545
+            text = rec_food[i]['name']
+            text_color = (0, 0, 0)
+            text_hover_color = (255, 255, 255)
+            rating = rec_food[i]['rattings']
+            r = requests.get(rec_food[i]['image'])
+            img = io.BytesIO(r.content)
+            left_image = pygame.image.load(img)
+            left_image = pygame.transform.scale(left_image, (80, 80))
+            temp_list.append(TextImageButton(f'food{i}', x, y, food_img, food_img_hover, 1, text,
+                                             font_grobold_small, text_color, text_hover_color, rating, left_image))
+        return temp_list
+
+    def run(self, rec_food):
+
         screen.fill((47, 82, 54))
 
-        if food_button1.draw():
-            self.next = True
-            return True
-        if food_button2.draw():
-            self.next = True
-            return True
-        if food_button3.draw():
-            self.next = True
-            return True
-        if food_button4.draw():
-            self.next = True
-            return True
-        if food_button5.draw():
-            self.next = True
-            return True
+        # if any(food.draw for food in self.button):
+        for i in range(len(self.button)):
+            if self.button[i].draw():
+                self.next = True
+                self.chosen_button = self.button[i]
+                self.chosen_desc = rec_food[i]['description']
+                self.chosen_url = rec_food[i]['url']
+                return True
+
+    def get_chosen(self):
+        return self.chosen_button
+
+    def get_chosen_desc(self):
+        return self.chosen_desc
+
+    def get_chosen_url(self):
+        return self.chosen_url
 
 
+class FoodIndividual(Interface):
+    def __init__(self):
+        self.next = False
+
+    def run(self, chosen_food, chosen_food_desc, chosen_food_url):
+        screen.fill((47, 82, 54))
+        food_image = chosen_food.left_image
+        food_image_scaled = pygame.transform.scale(food_image, (250, 250))
+        screen.blit(food_image_scaled, (225, 50))
+        food_name_btn = TextButton('foodname', 135, 300, food_name_img, food_name_img, 1,
+                                   chosen_food.text, font_grobold_small, (0, 0, 0))
+        food_desc = ButtonDescription('Desc', 60, 350, food_desc_img, food_desc_img, 1, chosen_food_desc,
+                                      GROBOLD, 14, (255, 255, 255))
+        recipe = ButtonWithLink('recipe link', 230, 620, recipe_img, recipe_img_hover, 1, chosen_food_url)
+        food_name_btn.draw()
+        food_desc.draw()
+        if recipe.draw():
+            self.next = True
+            self.link = recipe.link
 
 
 class ScreenManager:
@@ -473,13 +661,27 @@ class ScreenManager:
     def get_active_screen(self):
         return self.active_screen
 
-    def update(self, inputs: Optional):
+    def update(self, inputs=None, input2=None, input3=None):
         if self.active_screen:
-            if type(self.active_screen) in {Subcatergory, Difficulty, Serves, Times}:
+            if type(self.active_screen) in {Subcatergory, Difficulty, Serves, Times, FoodDisplay}:
                 self.active_screen.run(inputs)
+            elif type(self.active_screen) is FoodIndividual:
+                self.active_screen.run(inputs, input2, input3)
             else:
                 self.active_screen.run()
 
+
+def get_food(data):
+    with open(data, 'r') as f:
+        file = json.load(f)
+    temp_list = []
+    for i in range(len(file)):
+        temp_list.append(file[i])
+
+    return temp_list
+
+
+food_reccommended = get_food('recipes_small.json')
 
 main_menu = MainMenu()
 subcat_menu = Subcatergory()
@@ -487,7 +689,9 @@ difficulty_menu = Difficulty()
 serves_menu = Serves()
 nutrients_menu = Nutrients()
 time_menu = Times()
-food_menu = FoodDisplay()
+food_menu = FoodDisplay(food_reccommended)
+recipe_menu = FoodIndividual()
+
 screen_manager = ScreenManager()
 screen_manager.set_active_screen(main_menu)
 
@@ -505,6 +709,10 @@ while run:
         screen_manager.update(toggle_group3)
     elif type(screen_manager.get_active_screen()) is Times:
         screen_manager.update(toggle_group4)
+    elif type(screen_manager.get_active_screen()) is FoodDisplay:
+        screen_manager.update(food_reccommended)
+    elif type(screen_manager.get_active_screen()) is FoodIndividual:
+        screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
     else:
         screen_manager.update(None)
 
@@ -537,7 +745,11 @@ while run:
             time_menu.next = True
 
     if food_menu.next:
-        print('SAMPLE FOOD!')
+        screen_manager.set_active_screen(recipe_menu)
+
+    if recipe_menu.next:
+        webbrowser.open(recipe_menu.link)
+        pygame.display.quit()
 
     pygame.display.update()
 pygame.display.quit()
