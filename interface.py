@@ -578,11 +578,15 @@ class Nutrients(Interface):
 
 class Times(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.toggle = False
         self.next = False
 
     def run(self, buttons: list):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         screen.blit(times_img, (0, 0))
         group = MultipleToggle(buttons)
@@ -603,6 +607,7 @@ class Times(Interface):
 
 class FoodDisplay(Interface):
     def __init__(self, rec_food):
+        super().__init__()
         self.status = True
         self.toggle1 = False
         self.toggle2 = False
@@ -613,6 +618,9 @@ class FoodDisplay(Interface):
         self.button = self.make_button(rec_food)
 
     def make_button(self, rec_food):
+        """
+        runs the interface
+        """
         temp_list = []
         for i in range(len(rec_food)):
             x = 50
@@ -640,7 +648,9 @@ class FoodDisplay(Interface):
         return temp_list
 
     def run(self, rec_food):
-
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
 
         # if any(food.draw for food in self.button):
@@ -653,20 +663,33 @@ class FoodDisplay(Interface):
                 return True
 
     def get_chosen(self):
+        """
+        returns the chosen button
+        """
         return self.chosen_button
 
     def get_chosen_desc(self):
+        """
+        returns the chosen button's description
+        """
         return self.chosen_desc
 
     def get_chosen_url(self):
+        """
+        returns the chosen button's url
+        """
         return self.chosen_url
 
 
 class FoodIndividual(Interface):
     def __init__(self):
+        super().__init__()
         self.next = False
 
     def run(self, chosen_food, chosen_food_desc, chosen_food_url):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         food_image = chosen_food.left_image
         food_image_scaled = pygame.transform.scale(food_image, (250, 250))
@@ -684,16 +707,28 @@ class FoodIndividual(Interface):
 
 
 class ScreenManager:
+    """
+    Instance that manages the screen in pygame
+    """
     def __init__(self):
         self.active_screen = None
 
     def set_active_screen(self, screen):
+        """
+        sets the status of the active screen
+        """
         self.active_screen = screen
 
     def get_active_screen(self):
+        """
+        return the current active screen
+        """
         return self.active_screen
 
     def update(self, inputs=None, input2=None, input3=None):
+        """
+        updates the current active screen
+        """
         if self.active_screen:
             if type(self.active_screen) in {Subcatergory, Difficulty, Serves, Times, FoodDisplay}:
                 self.active_screen.run(inputs)
@@ -704,6 +739,9 @@ class ScreenManager:
 
 
 def get_food(data):
+    """
+    get the recommended food
+    """
     with open(data, 'r') as f:
         file = json.load(f)
     temp_list = []
@@ -714,6 +752,8 @@ def get_food(data):
 
 
 food_reccommended = get_food('recipes_small.json')
+# IMPORTANT
+# for the interface to work it needs to be given a list with the length of exactly 5.
 
 main_menu = MainMenu()
 subcat_menu = Subcatergory()
