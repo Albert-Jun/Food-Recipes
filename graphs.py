@@ -4,20 +4,19 @@ For Graph Classes
 """
 
 class _Vertex:
-    """A vertex in a book review graph, used to represent a user or a book.
+    """A vertex in a recepies graph, used to represent a subcategory, diffculty, serves, nutrients, times and food.
 
-    Each vertex item is either a user id or book title. Both are represented as strings,
-    even though we've kept the type annotation as Any to be consistent with lecture.
+    Each vertex represents any value
 
     Instance Attributes:
-        - item: The data stored in this vertex, representing a user or book.
-        - kind: The type of this vertex: '', '', ''.
+        - item: The data stored in this vertex, representing any value
+        - kind: The type of this vertex: 'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'.
         - neighbours: The vertices that are adjacent to this vertex.
 
     Representation Invariants:
         - self not in self.neighbours
         - all(self in u.neighbours for u in self.neighbours)
-        - self.kind in {'breakfast', 'lunch', 'dinner'}
+        - self.kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
     """
     item: Any
     kind: str
@@ -29,7 +28,7 @@ class _Vertex:
         This vertex is initialized with no neighbours.
 
         Preconditions:
-            - kind in {'', '', ''}
+            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
         """
         self.item = item
         self.kind = kind
@@ -38,6 +37,7 @@ class _Vertex:
     def degree(self) -> int:
         """Return the degree of this vertex."""
         return len(self.neighbours)
+
 
 class Graph:
     """A graph used to represent recepies network
@@ -59,7 +59,7 @@ class Graph:
         Do nothing if the given item is already in this graph.
 
         Preconditions:
-            - kind in {'user', 'book'}
+            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
         """
         if item not in self._vertices:
             self._vertices[item] = _Vertex(item, kind)
@@ -117,27 +117,3 @@ class Graph:
             return {v.item for v in self._vertices.values() if v.kind == kind}
         else:
             return set(self._vertices.keys())
-
-    def to_networkx(self, max_vertices: int = 5000) -> nx.Graph:
-        """Convert this graph into a networkx Graph.
-
-        max_vertices specifies the maximum number of vertices that can appear in the graph.
-        (This is necessary to limit the visualization output for large graphs.)
-
-        Note that this method is provided for you, and you shouldn't change it.
-        """
-        graph_nx = nx.Graph()
-        for v in self._vertices.values():
-            graph_nx.add_node(v.item, kind=v.kind)
-
-            for u in v.neighbours:
-                if graph_nx.number_of_nodes() < max_vertices:
-                    graph_nx.add_node(u.item, kind=u.kind)
-
-                if u.item in graph_nx.nodes:
-                    graph_nx.add_edge(v.item, u.item)
-
-            if graph_nx.number_of_nodes() >= max_vertices:
-                break
-
-        return graph_nx
