@@ -302,6 +302,7 @@ class MultipleToggle:
     """
     Multiple toggle buttons Instance
     """
+
     def __init__(self, buttons: list):
         self.buttons = buttons
         if any([button.clicked is True for button in self.buttons]):
@@ -414,16 +415,26 @@ toggle_button19 = Toggle('tog_btn19', 100, 300, toggle_img, toggle_hover_img, to
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button20 = Toggle('tog_btn20', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
+toggle_button21 = Toggle('tog_btn22', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
+toggle_button22 = Toggle('tog_btn23', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
+toggle_button23 = Toggle('tog_btn14', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
+toggle_button24 = Toggle('tog_btn25', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8]
 toggle_group2 = [toggle_button9, toggle_button10, toggle_button11, toggle_button12]
 toggle_group3 = [toggle_button13, toggle_button14, toggle_button15, toggle_button16]
 toggle_group4 = [toggle_button17, toggle_button18, toggle_button19, toggle_button20]
+toggle_group5 = [toggle_button21, toggle_button22, toggle_button23, toggle_button24]
 
 
 class Interface:
     """
     Interface Instance
     """
+
     def __init__(self):
         self.status = True
 
@@ -710,6 +721,7 @@ class ScreenManager:
     """
     Instance that manages the screen in pygame
     """
+
     def __init__(self):
         self.active_screen = None
 
@@ -779,8 +791,10 @@ while run:
         screen_manager.update(toggle_group2)
     elif type(screen_manager.get_active_screen()) is Serves:
         screen_manager.update(toggle_group3)
-    elif type(screen_manager.get_active_screen()) is Times:
+    elif type(screen_manager.get_active_screen()) is Nutrients:
         screen_manager.update(toggle_group4)
+    elif type(screen_manager.get_active_screen()) is Times:
+        screen_manager.update(toggle_group5)
     elif type(screen_manager.get_active_screen()) is FoodDisplay:
         screen_manager.update(food_reccommended)
     elif type(screen_manager.get_active_screen()) is FoodIndividual:
@@ -800,9 +814,12 @@ while run:
 
     if difficulty_menu.toggle:
         if difficulty_menu.next:
-            screen_manager.set_active_screen(serves_menu)
+            screen_manager.set_active_screen(nutrients_menu)
             difficulty_menu.toggle = True
             difficulty_menu.next = True
+
+    if nutrients_menu.next:
+        screen_manager.set_active_screen(serves_menu)
 
     if serves_menu.toggle:
         if serves_menu.next:
