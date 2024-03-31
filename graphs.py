@@ -2,6 +2,9 @@
 Graphs.py
 For Graph Classes
 """
+from __future__ import annotations
+from typing import Any
+
 
 class _Vertex:
     """A vertex in a recepies graph, used to represent a subcategory, diffculty, serves, nutrients, times and food.
@@ -111,7 +114,7 @@ class Graph:
         If kind != '', only return the items of the given vertex kind.
 
         Preconditions:
-            - kind in {'', 'user', 'book'}
+            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
         """
         if kind != '':
             return {v.item for v in self._vertices.values() if v.kind == kind}
