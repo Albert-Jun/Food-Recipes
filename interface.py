@@ -315,14 +315,20 @@ class MultipleToggle:
 
     def get_status(self):
         """
-
+        returns the clicked status of the button
         """
         return [button.clicked for button in self.buttons]
 
     def allowed_toggle(self):
+        """
+        returns the allowance of the button to be toggled
+        """
         return self.allowed_toggle
 
     def draw(self):
+        """
+        draws the button on to the screen
+        """
         for button in self.buttons:
             button.draw()
 
@@ -358,6 +364,9 @@ class ButtonWithLink(Button):
         return action
 
     def get_link(self):
+        """
+        returns the link associated with the button
+        """
         return self.link
 
 
@@ -412,17 +421,24 @@ toggle_group4 = [toggle_button17, toggle_button18, toggle_button19, toggle_butto
 
 
 class Interface:
+    """
+    Interface Instance
+    """
     def __init__(self):
         self.status = True
 
 
 class MainMenu(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.start = False
         self.option = False
 
     def run(self):
+        """
+        runs the interface
+        """
         screen.blit(bg_img, (0, 0))
         # screen.fill((3, 252, 82))
 
@@ -432,11 +448,15 @@ class MainMenu(Interface):
 
 class Subcatergory(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.toggle = False
         self.next = False
 
     def run(self, buttons: list):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         screen.blit(subcat_img, (0, 0))
         group = MultipleToggle(buttons)
@@ -457,11 +477,15 @@ class Subcatergory(Interface):
 
 class Difficulty(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.toggle = False
         self.next = False
 
     def run(self, buttons: list):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         screen.blit(difficult_img, (0, 0))
         group = MultipleToggle(buttons)
@@ -482,11 +506,15 @@ class Difficulty(Interface):
 
 class Serves(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.toggle = False
         self.next = False
 
     def run(self, buttons: list):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         screen.blit(serves_img, (0, 0))
         group = MultipleToggle(buttons)
@@ -507,6 +535,7 @@ class Serves(Interface):
 
 class Nutrients(Interface):
     def __init__(self):
+        super().__init__()
         self.status = True
         self.toggle1 = False
         self.toggle2 = False
@@ -516,6 +545,9 @@ class Nutrients(Interface):
         self.first = True
 
     def run(self):
+        """
+        runs the interface
+        """
         screen.fill((47, 82, 54))
         screen.blit(nutrients_img, (0, 0))
 
