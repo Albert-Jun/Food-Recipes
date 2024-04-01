@@ -680,7 +680,10 @@ def run_game(height, width):
                     y += 415
                 elif i == 4:
                     y += 530
-                text = rec_food[i].item
+                if rec_food[i].item > 50:
+                    text = rec_food[i].item[40:]
+                else:
+                    text = rec_food[i].item
                 text_color = (255, 255, 255)
                 text_hover_color = (0, 0, 0)
                 rating = rec_food[i].rating
