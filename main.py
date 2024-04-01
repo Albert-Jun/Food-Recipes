@@ -14,7 +14,7 @@ logo_img = pygame.image.load('assets/logo.png')
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Sustainable Table')
+pygame.display.set_caption('FOOD MOOD')
 pygame.display.set_icon(logo_img)
 
 GROBOLD = 'assets/GROBOLD.ttf'
@@ -51,14 +51,19 @@ toggle_clicked_img = pygame.image.load('assets/buttons/toggle_btn_clicked.png').
 toggle_hover_img = pygame.image.load('assets/buttons/toggle_btn_hover.png').convert_alpha()
 toggle_hover_clicked_img = pygame.image.load('assets/buttons/toggle_btn_clicked_hover.png').convert_alpha()
 
-subcat_img = pygame.image.load('assets/subcat.png')
-difficult_img = pygame.image.load('assets/difficult.png')
-serves_img = pygame.image.load('assets/serves.png')
+subcat_img = pygame.image.load('assets/subcat_bg.png')
+difficult_img = pygame.image.load('assets/difficulty_bg.png')
+serves_img = pygame.image.load('assets/servings_bg.png')
 nutrients_img = pygame.image.load('assets/nutrients.png')
-times_img = pygame.image.load('assets/times.png')
+times_img = pygame.image.load('assets/time_bg.png')
+food_bg = pygame.image.load('assets/food_bg.png')
+
 bg_img = pygame.image.load('assets/bg_img.png')
+bg_img2 = pygame.image.load('assets/bg_img3.png')
 bg_img_food = pygame.image.load('assets/bg_img_food.png')
-nofood_img = pygame.image.load('assets/buttons/no_food.png')
+nofood_img = pygame.image.load('assets/nofood.png')
+logo_home = pygame.image.load('assets/logo.png')
+logo_home_hover = pygame.image.load('assets/logo_hover.png')
 
 food1_img = pygame.image.load('assets/food1.jpg')
 food2_img = pygame.image.load('assets/food2.jpg')
@@ -388,7 +393,8 @@ class ButtonWithLink(Button):
         return self.link
 
 
-start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
+# start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
+start_button = Button('start_btn', 150, 230, logo_home, logo_home_hover, 1)
 next_button = Button('next_btn', 500, 600, next_img, next_img_hover, 1 / 2)
 next_button2 = Button('next_btn2', 500, 600, next_img, next_img_hover, 1 / 2)
 
@@ -475,8 +481,8 @@ class MainMenu(Interface):
         """
         runs the interface
         """
-        screen.blit(bg_img, (0, 0))
-        # screen.fill((3, 252, 82))
+        screen.blit(bg_img2, (0, 0))
+        # screen.fill((43, 191, 27))
 
         if start_button.draw():
             self.start = True
@@ -493,7 +499,7 @@ class Subcatergory(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        screen.fill((95, 167, 118))
         screen.blit(subcat_img, (0, 0))
         group = MultipleToggle(buttons)
         group.draw()
@@ -523,7 +529,7 @@ class Difficulty(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        screen.fill((43, 191, 27))
         screen.blit(difficult_img, (0, 0))
         group = MultipleToggle(buttons)
         group.draw()
@@ -553,7 +559,7 @@ class Serves(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        screen.fill((43, 191, 27))
         screen.blit(serves_img, (0, 0))
         group = MultipleToggle(buttons)
         group.draw()
@@ -587,7 +593,7 @@ class Nutrients(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        screen.fill((43, 191, 27))
         screen.blit(nutrients_img, (0, 0))
 
         if toggle_button1.draw():
@@ -626,7 +632,7 @@ class Times(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        screen.fill((43, 191, 27))
         screen.blit(times_img, (0, 0))
         group = MultipleToggle(buttons)
         group.draw()
@@ -676,8 +682,8 @@ class FoodDisplay(Interface):
             elif i == 4:
                 y += 530
             text = rec_food[i].item
-            text_color = (0, 0, 0)
-            text_hover_color = (255, 255, 255)
+            text_color = (255, 255, 255)
+            text_hover_color = (0, 0, 0)
             rating = rec_food[i].review
             r = requests.get(rec_food[i].image)
             img = io.BytesIO(r.content)
@@ -691,7 +697,8 @@ class FoodDisplay(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        # screen.fill((43, 191, 27))
+        screen.blit(food_bg, (0, 0))
 
         # if any(food.draw for food in self.button):
         for i in range(len(self.button)):
@@ -702,7 +709,7 @@ class FoodDisplay(Interface):
                 self.chosen_url = rec_food[i].url
                 return True
         if len(self.button) == 0:
-            screen.blit(nofood_img, (400, 500))
+            screen.blit(nofood_img, (0, 0))
 
     def get_chosen(self):
         """
@@ -732,7 +739,7 @@ class FoodIndividual(Interface):
         """
         runs the interface
         """
-        # screen.fill((47, 82, 54))
+        # screen.fill((43, 191, 27))
         screen.blit(bg_img_food, (0, 0))
         food_image = chosen_food.left_image
         food_image_scaled = pygame.transform.scale(food_image, (250, 250))
