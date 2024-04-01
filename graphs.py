@@ -89,13 +89,25 @@ class _Vertex:
 
 
 class _Food_Vertex(_Vertex):
+    url: str
     image: str
+    description: str
     review: int
 
-    def __init__(self, item: Any, kind: str, image: str, review: int) -> None:
+    def __init__(self, item: Any, kind: str, url: str, image: str, description: str,
+                 review: int) -> None:
         super().__init__(item, kind)
+        self.url = url
         self.image = image
+        self.description = description
         self.review = review
+
+    def match_choices(self, choices: list[str]) -> bool:
+        for choice in choices:
+            if not any(v2.item == choice for v2 in self.neighbours):
+                return False
+
+        return True
 
 
 class Graph:
@@ -123,11 +135,11 @@ class Graph:
         if item not in self._vertices:
             self._vertices[item] = _Vertex(item, kind)
 
-    def add_food_vertex(self, item: Any, kind: str, image: str, review: int):
+    def add_food_vertex(self, item: Any, kind: str, url: str, image: str, description: str, review: int) -> None:
         """Add a food vertex with the given name, kind, image and review to this graph."""
 
         if item not in self._vertices:
-            self._vertices[item] = _Food_Vertex(item, kind, image, review)
+            self._vertices[item] = _Food_Vertex(item, kind, url, image, description, review)
 
     def add_edge(self, item1: Any, item2: Any) -> None:
         """Add an edge between the two vertices with the given items in this graph.
@@ -299,7 +311,7 @@ def build_graph(recipes_file: str) -> Graph:
 
         for line in file:
             # add the food vertex
-            g.add_food_vertex(line['name'], 'food', line['image'], line['rattings'])
+            g.add_food_vertex(line['name'], 'food', line['url'], line['image'], line['description'], line['rattings'])
 
             # create edge between food and option
             add_edge_category(line['name'], line['subcategory'], g)
@@ -310,6 +322,10 @@ def build_graph(recipes_file: str) -> Graph:
     return g
 
 
+def get_food_options(graph: Graph, choices: list[str]) -> list[_Vertex]:
+    foods = [v for v in self._vertices.values() if v.match_choices(choices)]
+    return foods[:5]
+
 # pprint.pprint(extract_recipes('recipes.json'))
 
 # print(calc_time('17 hrs and 30 mins'))
@@ -317,15 +333,17 @@ def build_graph(recipes_file: str) -> Graph:
 # [('A challenge', 8), ('Easy', 951), ('More effort', 63)]
 
 # g = build_graph('recipes.json')
-#
-# v1 = g._vertices['Crispy lamb breast with broad beans, chilli & marjoram']
-#
+
+# v1 = g._vertices['Panuozzo sandwich']
+
 # print(v1.item)
-#
+# print(v1.url)
+# print(v1.image)
+# print(v1.description)
 # print(v1.review)
-#
+
 # for u in v1.neighbours:
-#     print(u.item)
+#   print(u.item)
 
 # ______________________________________________________________________
 # st = extract_recipes('recipes.json')
