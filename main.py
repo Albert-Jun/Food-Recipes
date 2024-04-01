@@ -316,16 +316,16 @@ def build_graph(recipes_file: str) -> Graph:
 
 # [('A challenge', 8), ('Easy', 951), ('More effort', 63)]
 
-g = build_graph('recipes.json')
-
-v1 = g._vertices['Crispy lamb breast with broad beans, chilli & marjoram']
-
-print(v1.item)
-
-print(v1.review)
-
-for u in v1.neighbours:
-    print(u.item)
+# g = build_graph('recipes.json')
+#
+# v1 = g._vertices['Crispy lamb breast with broad beans, chilli & marjoram']
+#
+# print(v1.item)
+#
+# print(v1.review)
+#
+# for u in v1.neighbours:
+#     print(u.item)
 
 # ______________________________________________________________________
 # st = extract_recipes('recipes.json')
