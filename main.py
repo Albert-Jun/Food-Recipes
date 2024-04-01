@@ -37,12 +37,16 @@ food_img = pygame.image.load('assets/buttons/food_btn.png').convert_alpha()
 food_name_img = pygame.image.load('assets/buttons/food_name_btn.png').convert_alpha()
 food_desc_img = pygame.image.load('assets/buttons/food_desc_btn.png').convert_alpha()
 recipe_img = pygame.image.load('assets/buttons/recipe_btn.png').convert_alpha()
+back_img = pygame.image.load('assets/buttons/back_btn.png').convert_alpha()
+close_img = pygame.image.load('assets/buttons/close_btn.png').convert_alpha()
 
 # Buttons Hover
 start_img_hover = pygame.image.load('assets/buttons/start_btn_hover.png').convert_alpha()
 next_img_hover = pygame.image.load('assets/buttons/next_btn_hover.png').convert_alpha()
 food_img_hover = pygame.image.load('assets/buttons/food_btn_hover.png').convert_alpha()
 recipe_img_hover = pygame.image.load('assets/buttons/recipe_btn_hover.png').convert_alpha()
+back_img_hover = pygame.image.load('assets/buttons/back_btn_hover.png').convert_alpha()
+close_img_hover = pygame.image.load('assets/buttons/close_btn_hover.png').convert_alpha()
 
 # Toggle Buttons
 toggle_img = pygame.image.load('assets/buttons/toggle_btn.png').convert_alpha()
@@ -56,6 +60,7 @@ serves_img = pygame.image.load('assets/servings_bg.png')
 nutrients_img = pygame.image.load('assets/nutrients.png')
 times_img = pygame.image.load('assets/time_bg.png')
 food_bg = pygame.image.load('assets/food_bg.png')
+last_bg = pygame.image.load('assets/last_bg.png')
 
 bg_img = pygame.image.load('assets/bg_img.png')
 bg_img2 = pygame.image.load('assets/bg_img3.png')
@@ -77,8 +82,8 @@ class Button:
     def __init__(self, name, x, y, image, image_pressed, scale):
         width = image.get_width()
         height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width) * scale, int(height) * scale))
-        self.image_pressed = pygame.transform.scale(image_pressed, (int(width) * scale, int(height) * scale))
+        self.image = pygame.transform.smoothscale(image, (int(width) * scale, int(height) * scale))
+        self.image_pressed = pygame.transform.smoothscale(image_pressed, (int(width) * scale, int(height) * scale))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
@@ -111,22 +116,37 @@ class Button:
 class Toggle(Button):
     def __init__(self, name, x, y, image, image_hover, image_pressed, image_pressed_hover, scale_norm, scale_pressed):
         super().__init__(name, x, y, image, image_pressed, scale_norm)
+        self.multiple_toggle_instance = None
         width = image.get_width()
         height = image.get_height()
-        self.image = pygame.transform.scale(image, (int(width * scale_norm), int(height * scale_norm)))
-        self.image_hover = pygame.transform.scale(image_hover, (int(width * scale_norm), int(height * scale_norm)))
-        self.image_pressed = pygame.transform.scale(image_pressed,
+        self.image = pygame.transform.smoothscale(image, (int(width * scale_norm), int(height * scale_norm)))
+        self.image_hover = pygame.transform.smoothscale(image_hover, (int(width * scale_norm), int(height * scale_norm)))
+        self.image_pressed = pygame.transform.smoothscale(image_pressed,
                                                     (int(width * scale_pressed), int(height * scale_pressed)))
-        self.image_pressed_hover = pygame.transform.scale(image_pressed_hover,
+        self.image_pressed_hover = pygame.transform.smoothscale(image_pressed_hover,
                                                           (int(width * scale_pressed), int(height * scale_pressed)))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.clicked = False
         self.click_pending = False  # To track if a click is in process
         self.name = name
 
+    def set_multiple_toggle(self, multiple_toggle_instance):
+        self.multiple_toggle_instance = multiple_toggle_instance
+
     def draw(self):
         pos = pygame.mouse.get_pos()
         mouse_pressed = pygame.mouse.get_pressed()[0]
+
+        if self.rect.collidepoint(pos) and self.multiple_toggle_instance is not None:
+            if mouse_pressed and not self.click_pending:
+                self.click_pending = True  # Mark that a click started
+            elif not mouse_pressed and self.click_pending:
+                # Toggle logic
+                self.clicked = not self.clicked
+                if self.clicked:  # If toggled, update state in MultipleToggle
+                    self.multiple_toggle_instance.update_toggle_state(self)
+                self.click_pending = False  # Reset click tracking
+                print(f'{self.name} is Toggled' if self.clicked else f'{self.name} is untoggled')
 
         if self.rect.collidepoint(pos):
             if mouse_pressed and not self.click_pending:
@@ -155,6 +175,14 @@ class Toggle(Button):
         set when a click is allowed
         """
         self.click_pending = allow
+
+    def untoggle(self):
+        """
+        Sets the button's clicked state to False.
+        """
+        self.clicked = False
+        print(f'{self.name} is untoggled')
+
 
 
 class TextButton(Button):
@@ -197,8 +225,11 @@ class TextImageButton(Button):
         self.text_color = text_color
         self.text_hover_color = text_hover_color
         self.rating = rating  # Integer rating from 1 to 5
-        self.left_image = pygame.transform.scale(left_image,
-                                                 (80, 80))  # Load the image to display to the left of the text
+        try:
+            self.left_image = pygame.transform.smoothscale(left_image, (80, 80))
+        except ValueError:
+            self.left_image = pygame.transform.scale(left_image, (80, 80))
+            # Load the image to display to the left of the text
         self.star_full = pygame.image.load('assets/buttons/stars_full.png')  # Load your full star image
         self.star_empty = pygame.image.load('assets/buttons/stars_empty.png')  # Load your empty star image
 
@@ -347,6 +378,14 @@ class MultipleToggle:
         """
         return self.allowed_toggle
 
+    def update_toggle_state(self, toggled_button):
+        """
+        Ensures only the toggled_button remains toggled, untoggling others.
+        """
+        for button in self.buttons:
+            if button != toggled_button:
+                button.untoggle()
+
     def draw(self):
         """
         draws the button on to the screen
@@ -396,6 +435,8 @@ class ButtonWithLink(Button):
 start_button = Button('start_btn', 150, 230, logo_home, logo_home_hover, 1)
 next_button = Button('next_btn', 500, 650, next_img, next_img_hover, 1 / 2)
 next_button2 = Button('next_btn2', 500, 620, next_img, next_img_hover, 1 / 2)
+back_button = Button('back_btn', 10, 20, back_img, back_img_hover, 1)
+close_button = Button('close_btn', 550, 20, close_img, close_img_hover, 1)
 
 toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -503,10 +544,10 @@ class Subcatergory(Interface):
         group = MultipleToggle(buttons)
         group.draw()
 
+        for button in group.buttons:
+            button.set_multiple_toggle(group)
+
         if not group.allowed_toggle:
-            for i in range(len(group.buttons)):
-                if group.get_status()[i] is False:
-                    group.buttons[i].set_allowed_click(False)
             self.toggle = True
         else:
             self.toggle = False
@@ -533,10 +574,10 @@ class Difficulty(Interface):
         group = MultipleToggle(buttons)
         group.draw()
 
+        for button in group.buttons:
+            button.set_multiple_toggle(group)
+
         if not group.allowed_toggle:
-            for i in range(len(group.buttons)):
-                if group.get_status()[i] is False:
-                    group.buttons[i].set_allowed_click(False)
             self.toggle = True
         else:
             self.toggle = False
@@ -563,10 +604,10 @@ class Serves(Interface):
         group = MultipleToggle(buttons)
         group.draw()
 
+        for button in group.buttons:
+            button.set_multiple_toggle(group)
+
         if not group.allowed_toggle:
-            for i in range(len(group.buttons)):
-                if group.get_status()[i] is False:
-                    group.buttons[i].set_allowed_click(False)
             self.toggle = True
         else:
             self.toggle = False
@@ -574,49 +615,6 @@ class Serves(Interface):
         if self.toggle:
             if next_button2.draw():
                 outputs.append(group.get_clicked().name)
-                self.next = True
-
-
-class Nutrients(Interface):
-    def __init__(self):
-        super().__init__()
-        self.status = True
-        self.toggle1 = False
-        self.toggle2 = False
-        self.toggle3 = False
-        self.toggle4 = False
-        self.next = False
-        self.first = True
-
-    def run(self):
-        """
-        runs the interface
-        """
-        screen.fill((43, 191, 27))
-        screen.blit(nutrients_img, (0, 0))
-
-        if toggle_button1.draw():
-            self.toggle1 = True
-        else:
-            self.toggle1 = False
-
-        if toggle_button2.draw():
-            self.toggle2 = True
-        else:
-            self.toggle2 = False
-
-        if toggle_button3.draw():
-            self.toggle3 = True
-        else:
-            self.toggle3 = False
-
-        if toggle_button4.draw():
-            self.toggle4 = True
-        else:
-            self.toggle4 = False
-
-        if self.toggle1 or self.toggle2 or self.toggle3 or self.toggle4:
-            if next_button.draw():
                 self.next = True
 
 
@@ -636,10 +634,10 @@ class Times(Interface):
         group = MultipleToggle(buttons)
         group.draw()
 
+        for button in group.buttons:
+            button.set_multiple_toggle(group)
+
         if not group.allowed_toggle:
-            for i in range(len(group.buttons)):
-                if group.get_status()[i] is False:
-                    group.buttons[i].set_allowed_click(False)
             self.toggle = True
         else:
             self.toggle = False
@@ -648,6 +646,11 @@ class Times(Interface):
             if next_button2.draw():
                 outputs.append(group.get_clicked().name)
                 recommended_foods.extend(all_foods.get_food_options(outputs))
+                print('#' * 50)
+                print('Final Choices:')
+                for output in outputs:
+                    print(output)
+                print('#' * 50)
                 self.next = True
 
 
@@ -687,7 +690,10 @@ class FoodDisplay(Interface):
             r = requests.get(rec_food[i].image)
             img = io.BytesIO(r.content)
             left_image = pygame.image.load(img)
-            left_image = pygame.transform.scale(left_image, (80, 80))
+            try:
+                left_image = pygame.transform.smoothscale(left_image, (80, 80))
+            except ValueError:
+                left_image = pygame.transform.scale(left_image, (80, 80))
             temp_list.append(TextImageButton(f'food{i}', x, y, food_img, food_img_hover, 1, text,
                                              font_grobold_small, text_color, text_hover_color, rating, left_image))
         self.button = temp_list
@@ -733,6 +739,7 @@ class FoodIndividual(Interface):
     def __init__(self):
         super().__init__()
         self.next = False
+        self.back = False
 
     def run(self, chosen_food, chosen_food_desc, chosen_food_url):
         """
@@ -741,7 +748,10 @@ class FoodIndividual(Interface):
         # screen.fill((43, 191, 27))
         screen.blit(bg_img_food, (0, 0))
         food_image = chosen_food.left_image
-        food_image_scaled = pygame.transform.scale(food_image, (250, 250))
+        try:
+            food_image_scaled = pygame.transform.smoothscale(food_image, (250, 250))
+        except ValueError:
+            food_image_scaled = pygame.transform.scale(food_image, (250, 250))
         screen.blit(food_image_scaled, (225, 50))
         food_name_btn = TextButton('foodname', 135, 300, food_name_img, food_name_img, 1,
                                    chosen_food.text, font_montserrat_medium, (0, 0, 0))
@@ -753,6 +763,19 @@ class FoodIndividual(Interface):
         if recipe.draw():
             self.next = True
             self.link = recipe.link
+        if back_button.draw():
+            self.back = True
+
+
+class Closing(Interface):
+    def __init__(self):
+        super().__init__()
+        self.next = False
+
+    def run(self):
+        screen.blit(last_bg, (0, 0))
+        if close_button.draw():
+            self.next = True
 
 
 class ScreenManager:
@@ -810,11 +833,10 @@ main_menu = MainMenu()
 subcat_menu = Subcatergory()
 difficulty_menu = Difficulty()
 serves_menu = Serves()
-nutrients_menu = Nutrients()
 time_menu = Times()
 food_menu = FoodDisplay()
-
 recipe_menu = FoodIndividual()
+closing_menu = Closing()
 
 screen_manager = ScreenManager()
 screen_manager.set_active_screen(main_menu)
@@ -834,8 +856,6 @@ while run:
         screen_manager.update(toggle_group2)
     elif isinstance(active_screen, Serves):
         screen_manager.update(toggle_group3)
-    elif isinstance(active_screen, Nutrients):
-        screen_manager.update(toggle_group4)
     elif isinstance(active_screen, Times):
         screen_manager.update(toggle_group5)
     elif isinstance(active_screen, FoodDisplay):
@@ -874,14 +894,22 @@ while run:
 
     # Food menu logic
     if food_menu.next:
+        food_menu.next = False
         screen_manager.set_active_screen(recipe_menu)
 
     # Recipe menu logic
     if recipe_menu.next:
         webbrowser.open(recipe_menu.link)
-        pygame.display.quit()
+        recipe_menu.next = False
+        screen_manager.set_active_screen(closing_menu)
+
+    if recipe_menu.back:
+        recipe_menu.next = False
+        recipe_menu.back = False
+        screen_manager.set_active_screen(food_menu)
+
+    if closing_menu.next:
+        pygame.quit()
         run = False
-
     pygame.display.update()
-
 pygame.quit()
