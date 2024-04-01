@@ -6,9 +6,10 @@ def extract_recipes(data):
     difficulty_so_far = set()
     max_so_far = 0
     for lines in file:
-        if len(lines['description']) > max_so_far:
-            difficulty_so_far.add(lines['description'])
-            max_so_far = len(lines['description'])
+        if len(lines['name']) > max_so_far:
+            difficulty_so_far.add(lines['name'])
+            max_so_far = len(lines['name'])
+            print(lines['name'])
     return difficulty_so_far
 
 def get_food(data):
