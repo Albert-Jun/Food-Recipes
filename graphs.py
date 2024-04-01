@@ -88,10 +88,11 @@ class _Vertex:
         return len(self.neighbours)
 
     def match_choices(self, choices: list[str]) -> bool:
+        """Return whether the food matches the choices
+        """
         for choice in choices:
             if not any(v2.item == choice for v2 in self.neighbours):
                 return False
-
         return True
 
 
@@ -99,15 +100,15 @@ class _Food_Vertex(_Vertex):
     url: str
     image: str
     description: str
-    review: int
+    rating: int
 
     def __init__(self, item: Any, kind: str, url: str, image: str, description: str,
-                 review: int) -> None:
+                 rating: int) -> None:
         super().__init__(item, kind)
         self.url = url
         self.image = image
         self.description = description
-        self.review = review
+        self.rating = rating
 
 
 class Graph:
@@ -135,11 +136,11 @@ class Graph:
         if item not in self._vertices:
             self._vertices[item] = _Vertex(item, kind)
 
-    def add_food_vertex(self, item: Any, kind: str, url: str, image: str, description: str, review: int) -> None:
-        """Add a food vertex with the given name, kind, image and review to this graph."""
+    def add_food_vertex(self, item: Any, kind: str, url: str, image: str, description: str, rating: int) -> None:
+        """Add a food vertex with the given name, kind, url, image and rating to this graph."""
 
         if item not in self._vertices:
-            self._vertices[item] = _Food_Vertex(item, kind, url, image, description, review)
+            self._vertices[item] = _Food_Vertex(item, kind, url, image, description, rating)
 
     def add_edge(self, item1: Any, item2: Any) -> None:
         """Add an edge between the two vertices with the given items in this graph.
@@ -197,6 +198,11 @@ class Graph:
 
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
         foods = [v for v in self._vertices.values() if v.match_choices(choices) and v.kind == 'food']
+
+        # Ssrt the food vertices based on their rating attribute in descending order
+        foods.sort(key=lambda v: v.rating, reverse=True)
+
+        # Return the top 5 food vertices with highest ratings
         return foods[:5]
 
 
@@ -342,7 +348,7 @@ def build_graph(recipes_file: str) -> Graph:
 # print(v1.url)
 # print(v1.image)
 # print(v1.description)
-# print(v1.review)
+# print(v1.rating)
 
 # for u in v1.neighbours:
 #   print(u.item)
