@@ -435,11 +435,12 @@ toggle_button25 = Toggle('tog_btn25', 100, 100, toggle_img, toggle_hover_img, to
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 
 toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
-toggle_group2 = [toggle_button9, toggle_button10, toggle_button11, toggle_button12]
+toggle_group2 = [toggle_button9, toggle_button10]
 toggle_group3 = [toggle_button13, toggle_button14, toggle_button15, toggle_button16]
-toggle_group4 = [toggle_button17, toggle_button18, toggle_button19, toggle_button20]
+toggle_group4 = [toggle_button17, toggle_button18, toggle_button19]
 toggle_group5 = [toggle_button21, toggle_button22, toggle_button23, toggle_button24]
 
+outputs = []
 
 class Interface:
     """
@@ -494,6 +495,7 @@ class Subcatergory(Interface):
 
         if self.toggle:
             if next_button2.draw():
+                outputs.append(group.get_clicked())
                 self.next = True
 
 
@@ -523,6 +525,7 @@ class Difficulty(Interface):
 
         if self.toggle:
             if next_button2.draw():
+                outputs.append(group.get_clicked())
                 self.next = True
 
 
@@ -552,6 +555,7 @@ class Serves(Interface):
 
         if self.toggle:
             if next_button2.draw():
+                outputs.append(group.get_clicked())
                 self.next = True
 
 
@@ -624,6 +628,7 @@ class Times(Interface):
 
         if self.toggle:
             if next_button2.draw():
+                outputs.append(group.get_clicked())
                 self.next = True
 
 
@@ -794,64 +799,58 @@ run = True
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-    if type(screen_manager.get_active_screen()) is Subcatergory:
+            run = False  # Set run to False to exit the main loop
+
+    active_screen = screen_manager.get_active_screen()
+
+    # Update screen based on the active screen type
+    if isinstance(active_screen, Subcatergory):
         screen_manager.update(toggle_group1)
-    elif type(screen_manager.get_active_screen()) is Difficulty:
+    elif isinstance(active_screen, Difficulty):
         screen_manager.update(toggle_group2)
-    elif type(screen_manager.get_active_screen()) is Serves:
+    elif isinstance(active_screen, Serves):
         screen_manager.update(toggle_group3)
-    elif type(screen_manager.get_active_screen()) is Nutrients:
+    elif isinstance(active_screen, Nutrients):
         screen_manager.update(toggle_group4)
-    elif type(screen_manager.get_active_screen()) is Times:
+    elif isinstance(active_screen, Times):
         screen_manager.update(toggle_group5)
-    elif type(screen_manager.get_active_screen()) is FoodDisplay:
+    elif isinstance(active_screen, FoodDisplay):
         screen_manager.update(food_reccommended)
-    elif type(screen_manager.get_active_screen()) is FoodIndividual:
+    elif isinstance(active_screen, FoodIndividual):
         screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
     else:
         screen_manager.update(None)
 
-    if main_menu.status:
-        if main_menu.start:
-            screen_manager.set_active_screen(subcat_menu)
+    # Main menu logic
+    if main_menu.status and main_menu.start:
+        screen_manager.set_active_screen(subcat_menu)
 
-    if subcat_menu.toggle:
-        if subcat_menu.next:
-            screen_manager.set_active_screen(difficulty_menu)
-            subcat_menu.toggle = True
-            subcat_menu.next = True
+    # Subcategory menu logic
+    if subcat_menu.toggle and subcat_menu.next:
+        screen_manager.set_active_screen(difficulty_menu)
 
-    if difficulty_menu.toggle:
-        if difficulty_menu.next:
-            screen_manager.set_active_screen(nutrients_menu)
-            difficulty_menu.toggle = True
-            difficulty_menu.next = True
-
-    if nutrients_menu.next:
+    # Difficulty menu logic
+    if difficulty_menu.toggle and difficulty_menu.next:
         screen_manager.set_active_screen(serves_menu)
 
-    if serves_menu.toggle:
-        if serves_menu.next:
-            screen_manager.set_active_screen(time_menu)
-            serves_menu.toggle = True
-            serves_menu.next = True
+    # Serves menu logic
+    if serves_menu.toggle and serves_menu.next:
+        screen_manager.set_active_screen(time_menu)
 
-    if time_menu.toggle:
-        if time_menu.next:
-            screen_manager.set_active_screen(food_menu)
-            time_menu.toggle = True
-            time_menu.next = True
+    # Time menu logic
+    if time_menu.toggle and time_menu.next:
+        screen_manager.set_active_screen(food_menu)
 
+    # Food menu logic
     if food_menu.next:
         screen_manager.set_active_screen(recipe_menu)
 
+    # Recipe menu logic
     if recipe_menu.next:
         webbrowser.open(recipe_menu.link)
         pygame.display.quit()
+        run = False
 
     pygame.display.update()
-pygame.display.quit()
+
 pygame.quit()
-sys.exit()
