@@ -320,6 +320,14 @@ class MultipleToggle:
         """
         return [button.clicked for button in self.buttons]
 
+    def get_clicked(self):
+        """
+        Returns the clicked button
+        """
+        for button in self.buttons:
+            if button.clicked:
+                return button
+
     def allowed_toggle(self):
         """
         returns the allowance of the button to be toggled
@@ -372,8 +380,8 @@ class ButtonWithLink(Button):
 
 
 start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
-next_button = Button('next_btn', 400, 500, next_img, next_img_hover, 1 / 2)
-next_button2 = Button('next_btn2', 400, 500, next_img, next_img_hover, 1 / 2)
+next_button = Button('next_btn', 500, 600, next_img, next_img_hover, 1 / 2)
+next_button2 = Button('next_btn2', 500, 600, next_img, next_img_hover, 1 / 2)
 
 toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -415,15 +423,18 @@ toggle_button19 = Toggle('tog_btn19', 100, 300, toggle_img, toggle_hover_img, to
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button20 = Toggle('tog_btn20', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button21 = Toggle('tog_btn22', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button21 = Toggle('tog_btn21', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button22 = Toggle('tog_btn23', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button22 = Toggle('tog_btn22', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button23 = Toggle('tog_btn14', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button23 = Toggle('tog_btn23', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button24 = Toggle('tog_btn25', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button24 = Toggle('tog_btn24', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8]
+toggle_button25 = Toggle('tog_btn25', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
+                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
+
+toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
 toggle_group2 = [toggle_button9, toggle_button10, toggle_button11, toggle_button12]
 toggle_group3 = [toggle_button13, toggle_button14, toggle_button15, toggle_button16]
 toggle_group4 = [toggle_button17, toggle_button18, toggle_button19, toggle_button20]
