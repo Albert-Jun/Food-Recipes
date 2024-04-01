@@ -87,6 +87,13 @@ class _Vertex:
         """Return the degree of this vertex."""
         return len(self.neighbours)
 
+    def match_choices(self, choices: list[str]) -> bool:
+        for choice in choices:
+            if not any(v2.item == choice for v2 in self.neighbours):
+                return False
+
+        return True
+
 
 class _Food_Vertex(_Vertex):
     url: str
@@ -102,13 +109,9 @@ class _Food_Vertex(_Vertex):
         self.description = description
         self.review = review
 
-    def match_choices(self, choices: list[str]) -> bool:
         for choice in choices:
-            if not any(v2.item == choice for v2 in self.neighbours):
                 return False
-
         return True
-
 
 class Graph:
     """A graph used to represent recepies network
@@ -196,9 +199,8 @@ class Graph:
             return set(self._vertices.keys())
 
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
-        foods = [v for v in self._vertices.values() if v.kind == 'food']
-        foods2 = [v for v in foods if v.match_choices(choices)]
-        return foods2[:5]
+        foods = [v for v in self._vertices.values() if v.match_choices(choices) and v.kind == 'food']
+        return foods[:5]
 
 
 def combine_times(times: dict) -> int:
@@ -325,6 +327,7 @@ def build_graph(recipes_file: str) -> Graph:
             add_edge_times(line['name'], line['times'], g)
 
     return g
+
 
 
 

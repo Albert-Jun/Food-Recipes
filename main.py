@@ -18,12 +18,18 @@ pygame.display.set_caption('Sustainable Table')
 pygame.display.set_icon(logo_img)
 
 GROBOLD = 'assets/GROBOLD.ttf'
+MONTSERRAT = 'assets/Montserrat-SemiBold.ttf'
+HELVETICA = 'assets/Helvetica-Bold.ttf'
 small_font_size = 14
 medium_font_size = 20
 
 # Load the custom font
 font_grobold_small = pygame.font.Font(GROBOLD, small_font_size)
 font_grobold_medium = pygame.font.Font(GROBOLD, medium_font_size)
+font_montserrat_small = pygame.font.Font(MONTSERRAT, small_font_size)
+font_montserrat_medium = pygame.font.Font(MONTSERRAT, medium_font_size)
+font_helvetica_small = pygame.font.Font(HELVETICA, small_font_size)
+font_helvetica_medium = pygame.font.Font(HELVETICA, medium_font_size)
 
 # Buttons
 start_img = pygame.image.load('assets/buttons/start_btn.png').convert_alpha()
@@ -51,6 +57,8 @@ serves_img = pygame.image.load('assets/serves.png')
 nutrients_img = pygame.image.load('assets/nutrients.png')
 times_img = pygame.image.load('assets/times.png')
 bg_img = pygame.image.load('assets/bg_img.png')
+bg_img_food = pygame.image.load('assets/bg_img_food.png')
+nofood_img = pygame.image.load('assets/buttons/no_food.png')
 
 food1_img = pygame.image.load('assets/food1.jpg')
 food2_img = pygame.image.load('assets/food2.jpg')
@@ -257,7 +265,7 @@ class ButtonDescription(Button):
 
         # Initialize an empty list to hold rendered text surfaces and their positions
         self.text_surfaces = []
-        self.render_wrapped_text(description, 1000)  # Pass the available width for text
+        self.render_wrapped_text(description, 700)  # Pass the available width for text
 
     def render_wrapped_text(self, text, available_width):
         """Renders wrapped text to fit inside the button."""
@@ -392,27 +400,27 @@ toggle_button3 = Toggle('tog_btn3', 100, 300, toggle_img, toggle_hover_img, togg
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button4 = Toggle('tog_btn4', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button5 = Toggle('tog_btn5', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button5 = Toggle('Recipes with Animal Products', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button6 = Toggle('tog_btn6', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button6 = Toggle('Vegan Recipes', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button7 = Toggle('tog_btn7', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button7 = Toggle('Vegetarian Recipes', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button8 = Toggle('tog_btn8', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button8 = Toggle('Meal-Specific Recipes', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button9 = Toggle('tog_btn9', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button9 = Toggle('Easy', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button10 = Toggle('tog_btn10', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button10 = Toggle('Challenging', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button11 = Toggle('tog_btn11', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button12 = Toggle('tog_btn12', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button13 = Toggle('tog_btn13', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button13 = Toggle('1 ~ 2', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button14 = Toggle('tog_btn14', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button14 = Toggle('3 ~ 4', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button15 = Toggle('tog_btn15', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button15 = Toggle('5+', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button16 = Toggle('tog_btn16', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -424,28 +432,28 @@ toggle_button19 = Toggle('tog_btn19', 100, 300, toggle_img, toggle_hover_img, to
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button20 = Toggle('tog_btn20', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button21 = Toggle('tog_btn21', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button21 = Toggle('Quick (0 ~ 20 mins)', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button22 = Toggle('tog_btn22', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button22 = Toggle('Moderate (20 ~ 40 mins)', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button23 = Toggle('tog_btn23', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button23 = Toggle('Lengthy (40 ~ 60 mins)', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button24 = Toggle('tog_btn24', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button24 = Toggle('More than 1 hr', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button25 = Toggle('tog_btn25', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button25 = Toggle('Miscellaneous', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 
 toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
 toggle_group2 = [toggle_button9, toggle_button10]
-toggle_group3 = [toggle_button13, toggle_button14, toggle_button15, toggle_button16]
+toggle_group3 = [toggle_button13, toggle_button14, toggle_button15]
 toggle_group4 = [toggle_button17, toggle_button18, toggle_button19]
 toggle_group5 = [toggle_button21, toggle_button22, toggle_button23, toggle_button24]
 
-graphs.build_graph('recipes.json')
+all_foods = graphs.build_graph('recipes.json')
 
 
 outputs = []
-
+recommended_foods = []
 
 class Interface:
     """
@@ -500,7 +508,7 @@ class Subcatergory(Interface):
 
         if self.toggle:
             if next_button2.draw():
-                outputs.append(group.get_clicked())
+                outputs.append(group.get_clicked().name)
                 self.next = True
 
 
@@ -530,7 +538,7 @@ class Difficulty(Interface):
 
         if self.toggle:
             if next_button2.draw():
-                outputs.append(group.get_clicked())
+                outputs.append(group.get_clicked().name)
                 self.next = True
 
 
@@ -560,7 +568,7 @@ class Serves(Interface):
 
         if self.toggle:
             if next_button2.draw():
-                outputs.append(group.get_clicked())
+                outputs.append(group.get_clicked().name)
                 self.next = True
 
 
@@ -633,7 +641,8 @@ class Times(Interface):
 
         if self.toggle:
             if next_button2.draw():
-                outputs.append(group.get_clicked())
+                outputs.append(group.get_clicked().name)
+                recommended_foods.extend(all_foods.get_food_options(outputs))
                 self.next = True
 
 
@@ -657,20 +666,20 @@ class FoodDisplay(Interface):
             x = 50
             y = 0
             if i == 0:
-                y += 85
+                y += 70
             elif i == 1:
-                y += 200
+                y += 185
             elif i == 2:
-                y += 315
+                y += 300
             elif i == 3:
-                y += 430
+                y += 415
             elif i == 4:
-                y += 545
-            text = rec_food[i]['name']
+                y += 530
+            text = rec_food[i].item
             text_color = (0, 0, 0)
             text_hover_color = (255, 255, 255)
-            rating = rec_food[i]['rattings']
-            r = requests.get(rec_food[i]['image'])
+            rating = rec_food[i].review
+            r = requests.get(rec_food[i].image)
             img = io.BytesIO(r.content)
             left_image = pygame.image.load(img)
             left_image = pygame.transform.scale(left_image, (80, 80))
@@ -689,9 +698,11 @@ class FoodDisplay(Interface):
             if self.button[i].draw():
                 self.next = True
                 self.chosen_button = self.button[i]
-                self.chosen_desc = rec_food[i]['description']
-                self.chosen_url = rec_food[i]['url']
+                self.chosen_desc = rec_food[i].description
+                self.chosen_url = rec_food[i].url
                 return True
+        if len(self.button) == 0:
+            screen.blit(nofood_img, (400, 500))
 
     def get_chosen(self):
         """
@@ -721,14 +732,15 @@ class FoodIndividual(Interface):
         """
         runs the interface
         """
-        screen.fill((47, 82, 54))
+        # screen.fill((47, 82, 54))
+        screen.blit(bg_img_food, (0, 0))
         food_image = chosen_food.left_image
         food_image_scaled = pygame.transform.scale(food_image, (250, 250))
         screen.blit(food_image_scaled, (225, 50))
         food_name_btn = TextButton('foodname', 135, 300, food_name_img, food_name_img, 1,
-                                   chosen_food.text, font_grobold_small, (0, 0, 0))
+                                   chosen_food.text, font_montserrat_medium, (0, 0, 0))
         food_desc = ButtonDescription('Desc', 60, 350, food_desc_img, food_desc_img, 1, chosen_food_desc,
-                                      GROBOLD, 14, (255, 255, 255))
+                                      HELVETICA, 14, (182, 182, 182))
         recipe = ButtonWithLink('recipe link', 230, 620, recipe_img, recipe_img_hover, 1, chosen_food_url)
         food_name_btn.draw()
         food_desc.draw()
@@ -784,6 +796,7 @@ def get_food(data):
 
 
 food_reccommended = get_food('recipes_small.json')
+
 # IMPORTANT
 # for the interface to work it needs to be given a list with the length of exactly 5.
 
@@ -794,6 +807,7 @@ serves_menu = Serves()
 nutrients_menu = Nutrients()
 time_menu = Times()
 food_menu = FoodDisplay()
+
 recipe_menu = FoodIndividual()
 
 screen_manager = ScreenManager()
@@ -819,7 +833,8 @@ while run:
     elif isinstance(active_screen, Times):
         screen_manager.update(toggle_group5)
     elif isinstance(active_screen, FoodDisplay):
-        screen_manager.update(food_reccommended)
+
+        screen_manager.update(recommended_foods)
     elif isinstance(active_screen, FoodIndividual):
         screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
     else:
@@ -827,22 +842,28 @@ while run:
 
     # Main menu logic
     if main_menu.status and main_menu.start:
+        main_menu.status = False
         screen_manager.set_active_screen(subcat_menu)
 
     # Subcategory menu logic
     if subcat_menu.toggle and subcat_menu.next:
+        subcat_menu.toggle = False
         screen_manager.set_active_screen(difficulty_menu)
 
     # Difficulty menu logic
     if difficulty_menu.toggle and difficulty_menu.next:
+        difficulty_menu.toggle = False
         screen_manager.set_active_screen(serves_menu)
 
     # Serves menu logic
     if serves_menu.toggle and serves_menu.next:
+        serves_menu.toggle = False
         screen_manager.set_active_screen(time_menu)
 
     # Time menu logic
     if time_menu.toggle and time_menu.next:
+        time_menu.toggle = False
+        food_menu.make_button(recommended_foods)
         screen_manager.set_active_screen(food_menu)
 
     # Food menu logic
