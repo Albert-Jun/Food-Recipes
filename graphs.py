@@ -109,9 +109,6 @@ class _Food_Vertex(_Vertex):
         self.description = description
         self.review = review
 
-        for choice in choices:
-                return False
-        return True
 
 class Graph:
     """A graph used to represent recepies network
