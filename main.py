@@ -394,8 +394,8 @@ class ButtonWithLink(Button):
 
 # start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
 start_button = Button('start_btn', 150, 230, logo_home, logo_home_hover, 1)
-next_button = Button('next_btn', 500, 600, next_img, next_img_hover, 1 / 2)
-next_button2 = Button('next_btn2', 500, 600, next_img, next_img_hover, 1 / 2)
+next_button = Button('next_btn', 500, 650, next_img, next_img_hover, 1 / 2)
+next_button2 = Button('next_btn2', 500, 620, next_img, next_img_hover, 1 / 2)
 
 toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -405,27 +405,27 @@ toggle_button3 = Toggle('tog_btn3', 100, 300, toggle_img, toggle_hover_img, togg
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button4 = Toggle('tog_btn4', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button5 = Toggle('Vegan Recipes', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button5 = Toggle('Vegan Recipes', 100, 410, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button6 = Toggle('Recipes with Animal Products', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button6 = Toggle('Recipes with Animal Products', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button7 = Toggle('Vegetarian Recipes', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button7 = Toggle('Vegetarian Recipes', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button8 = Toggle('Miscellaneous', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button8 = Toggle('Miscellaneous', 100, 510, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button9 = Toggle('Easy', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button9 = Toggle('Challenging', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button10 = Toggle('Challenging', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button10 = Toggle('Easy', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button11 = Toggle('tog_btn11', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button12 = Toggle('tog_btn12', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button13 = Toggle('1 ~ 2', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button13 = Toggle('5+', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button14 = Toggle('3 ~ 4', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button14 = Toggle('1 ~ 2', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button15 = Toggle('5+', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button15 = Toggle('3 ~ 4', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button16 = Toggle('tog_btn16', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -437,15 +437,15 @@ toggle_button19 = Toggle('tog_btn19', 100, 300, toggle_img, toggle_hover_img, to
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button20 = Toggle('tog_btn20', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button21 = Toggle('Quick (0 ~ 20 mins)', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button21 = Toggle('Lengthy (40 ~ 60 mins)', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button22 = Toggle('Moderate (20 ~ 40 mins)', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button22 = Toggle('Quick (0 ~ 20 mins)', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button23 = Toggle('Lengthy (40 ~ 60 mins)', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button23 = Toggle('Moderate (20 ~ 40 mins)', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button24 = Toggle('More than 1 hr', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button24 = Toggle('More than 1 hr', 100, 410, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button25 = Toggle('Meal-Specific Recipes', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button25 = Toggle('Meal-Specific Recipes', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 
 toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
