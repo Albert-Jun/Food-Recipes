@@ -195,6 +195,10 @@ class Graph:
         else:
             return set(self._vertices.keys())
 
+    def get_food_options(self, choices: list[str]) -> list[_Vertex]:
+        foods = [v for v in self._vertices.values() if v.match_choices(choices)]
+        return foods[:5]
+
 
 def combine_times(times: dict) -> int:
     prep_time = times.get('Preparation', '0')
@@ -322,9 +326,6 @@ def build_graph(recipes_file: str) -> Graph:
     return g
 
 
-def get_food_options(graph: Graph, choices: list[str]) -> list[_Vertex]:
-    foods = [v for v in graph._vertices.values() if v.match_choices(choices)]
-    return foods[:5]
 
 # pprint.pprint(extract_recipes('recipes.json'))
 
