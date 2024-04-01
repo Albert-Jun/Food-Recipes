@@ -1,5 +1,4 @@
 import json
-import sys
 import textwrap
 import webbrowser
 import io
@@ -406,13 +405,13 @@ toggle_button3 = Toggle('tog_btn3', 100, 300, toggle_img, toggle_hover_img, togg
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button4 = Toggle('tog_btn4', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button5 = Toggle('Recipes with Animal Products', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button5 = Toggle('Vegan Recipes', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button6 = Toggle('Vegan Recipes', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button6 = Toggle('Recipes with Animal Products', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button7 = Toggle('Vegetarian Recipes', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button8 = Toggle('Meal-Specific Recipes', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button8 = Toggle('Miscellaneous', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button9 = Toggle('Easy', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
                         toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -446,7 +445,7 @@ toggle_button23 = Toggle('Lengthy (40 ~ 60 mins)', 100, 300, toggle_img, toggle_
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 toggle_button24 = Toggle('More than 1 hr', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
-toggle_button25 = Toggle('Miscellaneous', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
+toggle_button25 = Toggle('Meal-Specific Recipes', 100, 100, toggle_img, toggle_hover_img, toggle_clicked_img,
                          toggle_hover_clicked_img, 1 / 2, 1 / 2)
 
 toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
