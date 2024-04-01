@@ -196,8 +196,9 @@ class Graph:
             return set(self._vertices.keys())
 
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
-        foods = [v for v in self._vertices.values() if v.match_choices(choices)]
-        return foods[:5]
+        foods = [v for v in self._vertices.values() if v.kind == 'food']
+        foods2 = [v for v in foods if v.match_choices(choices)]
+        return foods2[:5]
 
 
 def combine_times(times: dict) -> int:
