@@ -87,6 +87,13 @@ class _Vertex:
         """Return the degree of this vertex."""
         return len(self.neighbours)
 
+    def match_choices(self, choices: list[str]) -> bool:
+        for choice in choices:
+            if not any(v2.item == choice for v2 in self.neighbours):
+                return False
+
+        return True
+
 
 class _Food_Vertex(_Vertex):
     url: str
@@ -101,13 +108,6 @@ class _Food_Vertex(_Vertex):
         self.image = image
         self.description = description
         self.review = review
-
-    def match_choices(self, choices: list[str]) -> bool:
-        for choice in choices:
-            if not any(v2.item == choice for v2 in self.neighbours):
-                return False
-
-        return True
 
 
 class Graph:
@@ -196,7 +196,7 @@ class Graph:
             return set(self._vertices.keys())
 
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
-        foods = [v for v in self._vertices.values() if v.match_choices(choices)]
+        foods = [v for v in self._vertices.values() if v.match_choices(choices) and v.kind == 'food']
         return foods[:5]
 
 
