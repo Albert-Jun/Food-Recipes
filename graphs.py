@@ -323,7 +323,7 @@ def build_graph(recipes_file: str) -> Graph:
 
 
 def get_food_options(graph: Graph, choices: list[str]) -> list[_Vertex]:
-    foods = [v for v in self._vertices.values() if v.match_choices(choices)]
+    foods = [v for v in graph._vertices.values() if v.match_choices(choices)]
     return foods[:5]
 
 # pprint.pprint(extract_recipes('recipes.json'))
