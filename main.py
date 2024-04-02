@@ -37,7 +37,7 @@ def run_app():
             print('2. Add Recipe')
             print('Please enter a valid number (1/2): ')
     if user_input == 1:
-        interface.run_game(700, 700)
+        interface.run_game()
     else:
         add_recipe('recipes.json')
 

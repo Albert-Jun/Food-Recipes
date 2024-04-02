@@ -9,11 +9,12 @@ import graphs
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
-def run_game(height, width):
+
+def run_game():
     logo_img = pygame.image.load('assets/logo.png')
 
     pygame.init()
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('FOOD MOOD')
     pygame.display.set_icon(logo_img)
 
@@ -40,6 +41,8 @@ def run_game(height, width):
     recipe_img = pygame.image.load('assets/buttons/recipe_btn.png').convert_alpha()
     back_img = pygame.image.load('assets/buttons/back_btn.png').convert_alpha()
     close_img = pygame.image.load('assets/buttons/close_btn.png').convert_alpha()
+    back_img_food = pygame.image.load('assets/buttons/back_btn_food.png').convert_alpha()
+    next_img_food = pygame.image.load('assets/buttons/next_btn_food.png').convert_alpha()
 
     # Buttons Hover
     start_img_hover = pygame.image.load('assets/buttons/start_btn_hover.png').convert_alpha()
@@ -48,6 +51,8 @@ def run_game(height, width):
     recipe_img_hover = pygame.image.load('assets/buttons/recipe_btn_hover.png').convert_alpha()
     back_img_hover = pygame.image.load('assets/buttons/back_btn_hover.png').convert_alpha()
     close_img_hover = pygame.image.load('assets/buttons/close_btn_hover.png').convert_alpha()
+    back_img_food_hover = pygame.image.load('assets/buttons/back_btn_food_hover.png').convert_alpha()
+    next_img_food_hover = pygame.image.load('assets/buttons/next_btn_food_hover.png').convert_alpha()
 
     # Toggle Buttons
     toggle_img = pygame.image.load('assets/buttons/toggle_btn.png').convert_alpha()
@@ -434,6 +439,8 @@ def run_game(height, width):
     next_button2 = Button('next_btn2', 500, 620, next_img, next_img_hover, 1 / 2)
     back_button = Button('back_btn', 10, 20, back_img, back_img_hover, 1)
     close_button = Button('close_btn', 550, 20, close_img, close_img_hover, 1)
+    back_button_food = Button('back_btn', 430, 640, back_img_food, back_img_food_hover, 1)
+    next_button_food = Button('back_btn', 550, 640, next_img_food, next_img_food_hover, 1)
 
     toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -659,8 +666,12 @@ def run_game(height, width):
             self.toggle2 = False
             self.toggle3 = False
             self.toggle4 = False
+            self.food = False
             self.next = False
+            self.back = False
             self.first = True
+            self.num = None
+            self.total_page = None
 
         def make_button(self, rec_food):
             """
@@ -698,6 +709,12 @@ def run_game(height, width):
                                                  font_grobold_small, text_color, text_hover_color, rating, left_image))
             self.button = temp_list
 
+        def set_num(self, num):
+            self.num = num
+
+        def set_total_page(self, page):
+            self.total_page = page
+
         def run(self, rec_food):
             """
             runs the interface
@@ -708,13 +725,32 @@ def run_game(height, width):
             # if any(food.draw for food in self.button):
             for i in range(len(self.button)):
                 if self.button[i].draw():
-                    self.next = True
+                    self.food = True
                     self.chosen_button = self.button[i]
                     self.chosen_desc = rec_food[i].description
                     self.chosen_url = rec_food[i].url
                     return True
             if len(self.button) == 0:
                 screen.blit(nofood_img, (0, 0))
+                return
+
+            if self.num > 1:
+                if back_button_food.draw():
+                    self.back = True
+
+            else:
+                if self.total_page > 1:
+                    if next_button_food.draw():
+                        self.next = True
+                else:
+                    return
+
+            if self.num < self.total_page:
+                if next_button_food.draw():
+                    self.next = True
+            else:
+                if back_button_food.draw():
+                    self.back = True
 
         def get_chosen(self):
             """
@@ -835,7 +871,11 @@ def run_game(height, width):
     serves_menu = Serves()
     time_menu = Times()
     food_menu = FoodDisplay()
+
+    food_menu2 = FoodDisplay()
+
     recipe_menu = FoodIndividual()
+    recipe_menu2 = FoodIndividual()
     closing_menu = Closing()
 
     screen_manager = ScreenManager()
@@ -860,10 +900,15 @@ def run_game(height, width):
         elif isinstance(active_screen, Times):
             screen_manager.update(toggle_group5)
         elif isinstance(active_screen, FoodDisplay):
-
-            screen_manager.update(recommended_foods)
+            if screen_manager.get_active_screen() is food_menu:
+                screen_manager.update(recommended_foods[:5])
+            if screen_manager.get_active_screen() is food_menu2:
+                screen_manager.update(recommended_foods[5:10])
         elif isinstance(active_screen, FoodIndividual):
-            screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
+            if screen_manager.get_active_screen() is recipe_menu:
+                screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
+            if screen_manager.get_active_screen() is recipe_menu2:
+                screen_manager.update(food_menu2.get_chosen(), food_menu2.get_chosen_desc(), food_menu2.get_chosen_url())
         else:
             screen_manager.update(None)
 
@@ -890,13 +935,34 @@ def run_game(height, width):
         # Time menu logic
         if time_menu.toggle and time_menu.next:
             time_menu.toggle = False
-            food_menu.make_button(recommended_foods)
+            food_menu.set_num(1)
+            if len(recommended_foods) > 5:
+                food_menu.set_total_page(2)
+                food_menu.set_total_page(2)
+                food_menu2.set_num(2)
+                food_menu2.set_total_page(2)
+                food_menu2.make_button(recommended_foods[5:10])
+            else:
+                food_menu.set_total_page(1)
+            food_menu.make_button(recommended_foods[:5])
             screen_manager.set_active_screen(food_menu)
 
         # Food menu logic
+        if food_menu.food:
+            food_menu.food = False
+            screen_manager.set_active_screen(recipe_menu)
+
         if food_menu.next:
             food_menu.next = False
-            screen_manager.set_active_screen(recipe_menu)
+            screen_manager.set_active_screen(food_menu2)
+
+        if food_menu2.back:
+            food_menu2.back = False
+            screen_manager.set_active_screen(food_menu)
+
+        if food_menu2.food:
+            food_menu2.food = False
+            screen_manager.set_active_screen(recipe_menu2)
 
         # Recipe menu logic
         if recipe_menu.next:
@@ -909,11 +975,18 @@ def run_game(height, width):
             recipe_menu.back = False
             screen_manager.set_active_screen(food_menu)
 
+        if recipe_menu2.next:
+            webbrowser.open(recipe_menu2.link)
+            recipe_menu2.next = False
+            screen_manager.set_active_screen(closing_menu)
+
+        if recipe_menu2.back:
+            recipe_menu2.next = False
+            recipe_menu2.back = False
+            screen_manager.set_active_screen(food_menu2)
+
         if closing_menu.next:
             pygame.quit()
             run = False
         pygame.display.update()
     pygame.quit()
-
-if __name__ == "__main__":
-    run_game(SCREEN_WIDTH, SCREEN_HEIGHT)
