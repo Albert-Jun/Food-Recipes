@@ -202,6 +202,10 @@ def combine_times(times: dict) -> int:
 
 
 def calc_time(time: str) -> int:
+    """
+    Given a string of time (ex. 4 hrs and 30 minutes), returns the number of minutes as an integer.
+    If given a range such as 20 minutes - 40 minutes, it takes the longest option.
+    """
     if 'No Time' in time:
         return 0
 
