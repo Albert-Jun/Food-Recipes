@@ -14,6 +14,7 @@ def run_app():
     print('1. Run app')
     print('2. Add Recipe')
     temp_list = [1, 2]
+    user_input = 1
     run = True
     while run:
         try:

@@ -680,7 +680,7 @@ def run_game(height, width):
                     y += 415
                 elif i == 4:
                     y += 530
-                if rec_food[i].item > 50:
+                if len(rec_food[i].item) > 50:
                     text = rec_food[i].item[40:]
                 else:
                     text = rec_food[i].item
