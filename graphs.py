@@ -4,7 +4,7 @@ For Graph Classes
 """
 from __future__ import annotations
 from typing import Any
-import json, pprint
+import json
 
 
 def extract_recipes(data):
@@ -53,13 +53,13 @@ def extract_recipes(data):
 
 
 class _Vertex:
-    """A vertex in a recepies graph, used to represent a subcategory, diffculty, serves, nutrients, times and         food.
+    """A vertex in a recipes graph, used to represent a subcategory, diffculty, serves, times and food.
 
     Each vertex represents any value
 
     Instance Attributes:
         - item: The data stored in this vertex, representing any value
-        - kind: The type of this vertex: 'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'.
+        - kind: The type of this vertex: 'subcategory', 'difficult', 'serves', 'times', 'food'.
         - neighbours: The vertices that are adjacent to this vertex.
 
     Representation Invariants:
@@ -77,26 +77,41 @@ class _Vertex:
         This vertex is initialized with no neighbours.
 
         Preconditions:
-            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
+            - kind in {'subcategory', 'difficult', 'serves', 'times'}
         """
         self.item = item
         self.kind = kind
         self.neighbours = set()
 
-    def degree(self) -> int:
-        """Return the degree of this vertex."""
-        return len(self.neighbours)
-
     def match_choices(self, choices: list[str]) -> bool:
-        """Return whether the food matches the choices
+        """Return whether the food matches the choices. choices is a list of user inputs that describe the food.
+        This function returns true if the food vertex matches the given choices.
         """
+        if self.kind != 'food':
+            return False
+
         for choice in choices:
             if not any(v2.item == choice for v2 in self.neighbours):
                 return False
         return True
 
 
-class _Food_Vertex(_Vertex):
+class _FoodVertex(_Vertex):
+    """A vertex in a recipes graph of kind 'food'.
+
+    Instance Attributes:
+        - item: The name of the food, represented by a string
+        - kind: The type of this vertex: 'food'
+        - neighbours: The vertices that are adjacent to this vertex.
+        - url: the url of the website the recipe is on, rerpesented by a string
+        - image: the url of the image of the recipe, represented by a string
+        - rating: the rating of the food given by the user, represented as an integer
+
+    Representation Invariants:
+        - self.kind == 'food'
+        - 0 <= self.rating <= 5
+
+    """
     url: str
     image: str
     description: str
@@ -104,6 +119,13 @@ class _Food_Vertex(_Vertex):
 
     def __init__(self, item: Any, kind: str, url: str, image: str, description: str,
                  rating: int) -> None:
+        """Initialize a new vertex with the given item, kind, url, image, description and rating.
+
+        This vertex is initialized with no neighbours. (It uses the _Vertex class initializer for item, kind).
+
+        Preconditions:
+            - kind == 'food'
+        """
         super().__init__(item, kind)
         self.url = url
         self.image = image
@@ -112,7 +134,7 @@ class _Food_Vertex(_Vertex):
 
 
 class Graph:
-    """A graph used to represent recepies network
+    """A graph used to represent recipes network.
     """
     # Private Instance Attributes:
     #     - _vertices:
@@ -137,10 +159,10 @@ class Graph:
             self._vertices[item] = _Vertex(item, kind)
 
     def add_food_vertex(self, item: Any, kind: str, url: str, image: str, description: str, rating: int) -> None:
-        """Add a food vertex with the given name, kind, url, image and rating to this graph."""
+        """Add a food vertex with the given name, kind, url, image, description and rating to this graph."""
 
         if item not in self._vertices:
-            self._vertices[item] = _Food_Vertex(item, kind, url, image, description, rating)
+            self._vertices[item] = _FoodVertex(item, kind, url, image, description, rating)
 
     def add_edge(self, item1: Any, item2: Any) -> None:
         """Add an edge between the two vertices with the given items in this graph.
@@ -159,54 +181,28 @@ class Graph:
         else:
             raise ValueError
 
-    def adjacent(self, item1: Any, item2: Any) -> bool:
-        """Return whether item1 and item2 are adjacent vertices in this graph.
-
-        Return False if item1 or item2 do not appear as vertices in this graph.
-        """
-        if item1 in self._vertices and item2 in self._vertices:
-            v1 = self._vertices[item1]
-            return any(v2.item == item2 for v2 in v1.neighbours)
-        else:
-            return False
-
-    def get_neighbours(self, item: Any) -> set:
-        """Return a set of the neighbours of the given item.
-
-        Note that the *items* are returned, not the _Vertex objects themselves.
-
-        Raise a ValueError if item does not appear as a vertex in this graph.
-        """
-        if item in self._vertices:
-            v = self._vertices[item]
-            return {neighbour.item for neighbour in v.neighbours}
-        else:
-            raise ValueError
-
-    def get_all_vertices(self, kind: str = '') -> set:
-        """Return a set of all vertex items in this graph.
-
-        If kind != '', only return the items of the given vertex kind.
-
-        Preconditions:
-            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
-        """
-        if kind != '':
-            return {v.item for v in self._vertices.values() if v.kind == kind}
-        else:
-            return set(self._vertices.keys())
-
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
-        foods = [v for v in self._vertices.values() if v.match_choices(choices) and v.kind == 'food']
+        """Return a list of food vertices from graph based on the given choices.
+        The list is sorted based on rating (highest to lowest).
+        If there are more than 10 only return the 10 highest rated
+        """
+        foods = [v for v in self._vertices.values() if v.match_choices(choices)]
 
         # Ssrt the food vertices based on their rating attribute in descending order
         foods.sort(key=lambda v: v.rating, reverse=True)
 
-        # Return the top 5 food vertices with highest ratings
+        # Return the top 10 food vertices with highest ratings
         return foods[:10]
 
 
 def combine_times(times: dict) -> int:
+    """
+    Given a dictionary that maps Preparation and/or Cooking to their times,
+    returns the combined times as an integer of minutes.
+
+    Preconditions:
+        - 'Preparation' in times or 'Cooking' in times
+    """
     prep_time = times.get('Preparation', '0')
     cooking_time = times.get('Cooking', '0')
 
@@ -214,6 +210,10 @@ def combine_times(times: dict) -> int:
 
 
 def calc_time(time: str) -> int:
+    """
+    Given a string of time (ex. 4 hrs and 30 minutes), returns the number of minutes as an integer.
+    If given a range such as 20 minutes - 40 minutes, it takes the longest option.
+    """
     if 'No Time' in time:
         return 0
 
@@ -232,6 +232,7 @@ def calc_time(time: str) -> int:
 
 
 def add_categories(graph: Graph) -> None:
+    """Add all the subcategory vertices to the given graph."""
     categories = ['Recipes with Animal Products',
                   'Vegan Recipes',
                   'Vegetarian Recipes',
@@ -243,17 +244,20 @@ def add_categories(graph: Graph) -> None:
 
 
 def add_difficulties(graph: Graph) -> None:
+    """Add all the difficulty vertices to the given graph."""
     graph.add_vertex('Easy', 'difficult')
     graph.add_vertex('Challenging', 'difficult')
 
 
 def add_serves(graph: Graph) -> None:
+    """Add all the serves vertices to the given graph."""
     graph.add_vertex('1 ~ 2', 'serves')
     graph.add_vertex('3 ~ 4', 'serves')
     graph.add_vertex('5+', 'serves')
 
 
 def add_times(graph: Graph) -> None:
+    """Add all the times vertices to the given graph."""
     graph.add_vertex('Quick (0 ~ 20 mins)', 'times')
     graph.add_vertex('Moderate (20 ~ 40 mins)', 'times')
     graph.add_vertex('Lengthy (40 ~ 60 mins)', 'times')
@@ -261,6 +265,7 @@ def add_times(graph: Graph) -> None:
 
 
 def add_edge_category(food: str, subcategory: str, graph: Graph) -> None:
+    """Add an edge between the food vertex and the correct subcategory vertex in the given graph."""
     sub_to_main = {'Chicken': 'Recipes with Animal Products',
                    'Fish and seafood': 'Recipes with Animal Products',
                    'Meat': 'Recipes with Animal Products',
@@ -277,6 +282,7 @@ def add_edge_category(food: str, subcategory: str, graph: Graph) -> None:
 
 
 def add_edge_difficulty(food: str, difficulty: str, graph: Graph) -> None:
+    """Add an edge between the food vertex and the correct difficulty vertex in the given graph."""
     if difficulty == 'Easy':
         graph.add_edge(food, 'Easy')
     else:
@@ -284,6 +290,7 @@ def add_edge_difficulty(food: str, difficulty: str, graph: Graph) -> None:
 
 
 def add_edge_serves(food: str, serves: int, graph: Graph) -> None:
+    """Add an edge between the food vertex and the correct serves vertex in the given graph."""
     if serves < 3:
         graph.add_edge(food, '1 ~ 2')
     elif serves < 5:
@@ -293,6 +300,7 @@ def add_edge_serves(food: str, serves: int, graph: Graph) -> None:
 
 
 def add_edge_times(food: str, times: dict, graph: Graph) -> None:
+    """Add an edge between the food vertex and the correct times vertex in the given graph."""
     combined_times = combine_times(times)
     if combined_times <= 20:
         graph.add_edge(food, 'Quick (0 ~ 20 mins)')
@@ -305,7 +313,7 @@ def add_edge_times(food: str, times: dict, graph: Graph) -> None:
 
 
 def build_graph(recipes_file: str) -> Graph:
-    """Build a graph from the recipes file.
+    """Build a recipe graph using the given recipes file.
     """
 
     g = Graph()
@@ -330,8 +338,6 @@ def build_graph(recipes_file: str) -> Graph:
             add_edge_times(line['name'], line['times'], g)
 
     return g
-
-
 
 
 # pprint.pprint(extract_recipes('recipes.json'))
