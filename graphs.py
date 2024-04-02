@@ -277,21 +277,21 @@ def build_graph(recipes_file: str) -> Graph:
     with open(recipes_file, 'r') as f:
         file = json.load(f)
 
-        # add option vertices
-        add_categories(g)
-        add_difficulties(g)
-        add_serves(g)
-        add_times(g)
+    # add option vertices
+    add_categories(g)
+    add_difficulties(g)
+    add_serves(g)
+    add_times(g)
 
-        for line in file:
-            # add the food vertex
-            g.add_food_vertex(line['name'], 'food', line['url'], line['image'], line['description'], line['rattings'])
+    for line in file:
+        # add the food vertex
+        g.add_food_vertex(line['name'], 'food', line['url'], line['image'], line['description'], line['rattings'])
 
-            # create edge between food and option
-            add_edge_category(line['name'], line['subcategory'], g)
-            add_edge_difficulty(line['name'], line['difficult'], g)
-            add_edge_serves(line['name'], line['serves'], g)
-            add_edge_times(line['name'], line['times'], g)
+        # create edge between food and option
+        add_edge_category(line['name'], line['subcategory'], g)
+        add_edge_difficulty(line['name'], line['difficult'], g)
+        add_edge_serves(line['name'], line['serves'], g)
+        add_edge_times(line['name'], line['times'], g)
 
     return g
 
