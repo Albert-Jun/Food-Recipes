@@ -951,7 +951,6 @@ if __name__ == '__main__':
     # doctest.testmod()
 
     import python_ta
-
     python_ta.check_all(config={
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],  # the names (strs) of imported modules
         'allowed-io': [],

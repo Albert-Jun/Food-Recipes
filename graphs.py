@@ -7,51 +7,6 @@ from typing import Any
 import json
 
 
-def extract_recipes(data):
-    check = 'times'
-
-    with open(data, 'r') as f:
-        file = json.load(f)
-
-    lst = []
-    for lines in file:
-        lst.append(combine_times(lines[check]))
-
-    time_ranges = {'0 ~ 20': [], '20 ~ 40': [], '40 ~ 60': [], '60+': []}
-
-    for i in range(len(lst)):
-        if lst[i] <= 20:
-            time_ranges['0 ~ 20'].append(lst[i])
-        elif lst[i] <= 40:
-            time_ranges['20 ~ 40'].append(lst[i])
-        elif lst[i] <= 60:
-            time_ranges['40 ~ 60'].append(lst[i])
-        else:
-            time_ranges['60+'].append(lst[i])
-
-    for key in time_ranges:
-        time_ranges[key] = len(time_ranges[key])
-
-    # for lines in file:
-    #   if lines[check] not in lst:
-    #     lst.append(lines[check])
-
-    # for i in range(len(lst)):
-    #   count = 0
-    #   for lines in file:
-    #     if lines[check] != {}:
-    #       if lines[check] == lst[i]:
-    #           count += 1
-    #   lst[i] = (lst[i], count)
-
-    # acc = 0
-
-    # for tuple in lst:
-    #   acc += tuple[1]
-
-    return time_ranges
-
-
 class _Vertex:
     """A vertex in a recipes graph, used to represent a subcategory, diffculty, serves, times and food.
 
@@ -105,6 +60,7 @@ class _FoodVertex(_Vertex):
         - neighbours: The vertices that are adjacent to this vertex.
         - url: the url of the website the recipe is on, rerpesented by a string
         - image: the url of the image of the recipe, represented by a string
+        - description: the food description, represented by a string
         - rating: the rating of the food given by the user, represented as an integer
 
     Representation Invariants:
@@ -340,29 +296,11 @@ def build_graph(recipes_file: str) -> Graph:
     return g
 
 
-# pprint.pprint(extract_recipes('recipes.json'))
+if __name__ == '__main__':
 
-# print(calc_time('17 hrs and 30 mins'))
-
-# [('A challenge', 8), ('Easy', 951), ('More effort', 63)]
-
-# g = build_graph('recipes.json')
-
-# v1 = g._vertices['Panuozzo sandwich']
-
-# print(v1.item)
-# print(v1.url)
-# print(v1.image)
-# print(v1.description)
-# print(v1.rating)
-
-# for u in v1.neighbours:
-#   print(u.item)
-
-# ______________________________________________________________________
-# st = extract_recipes('recipes.json')
-# pprint.pprint(st)
-
-# Recipes: 1022
-# Serves: 1022
-# Nutrients: 545
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['json'],
+        'allowed-io': ['build_graph'],
+        'max-line-length': 120
+    })
