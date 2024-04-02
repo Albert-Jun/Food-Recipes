@@ -4,7 +4,7 @@ For Graph Classes
 """
 from __future__ import annotations
 from typing import Any
-import json, pprint
+import json
 
 
 def extract_recipes(data):
@@ -183,18 +183,26 @@ class Graph:
 
     def get_food_options(self, choices: list[str]) -> list[_Vertex]:
         """Return a list of food vertices from graph based on the given choices.
-        the list is sorted based on rating (highest to lowest).
+        The list is sorted based on rating (highest to lowest).
+        If there are more than 10 only return the 10 highest rated
         """
         foods = [v for v in self._vertices.values() if v.match_choices(choices)]
 
         # Ssrt the food vertices based on their rating attribute in descending order
         foods.sort(key=lambda v: v.rating, reverse=True)
 
-        # Return the top 5 food vertices with highest ratings
-        return foods[:10]
+        # Return the top 10 food vertices with highest ratings
+        return foods[:5]
 
 
 def combine_times(times: dict) -> int:
+    """
+    Given a dictionary that maps Preparation and/or Cooking to their times,
+    returns the combined times as an integer of minutes.
+
+    Preconditions:
+        - 'Preparation' in times or 'Cooking' in times
+    """
     prep_time = times.get('Preparation', '0')
     cooking_time = times.get('Cooking', '0')
 
@@ -292,6 +300,7 @@ def add_edge_serves(food: str, serves: int, graph: Graph) -> None:
 
 
 def add_edge_times(food: str, times: dict, graph: Graph) -> None:
+    """Add an edge between the food vertex and the correct times vertex in the given graph."""
     combined_times = combine_times(times)
     if combined_times <= 20:
         graph.add_edge(food, 'Quick (0 ~ 20 mins)')
@@ -329,8 +338,6 @@ def build_graph(recipes_file: str) -> Graph:
             add_edge_times(line['name'], line['times'], g)
 
     return g
-
-
 
 
 # pprint.pprint(extract_recipes('recipes.json'))
