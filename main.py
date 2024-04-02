@@ -226,12 +226,19 @@ def add_difficulties(graph: Graph) -> None:
 
 
 def add_serves(graph: Graph) -> None:
+    """
+
+    :param graph:
+    """
     graph.add_vertex('1 ~ 2', 'serves')
     graph.add_vertex('3 ~ 4', 'serves')
     graph.add_vertex('5+', 'serves')
 
 
 def add_times(graph: Graph) -> None:
+    """
+    Adds vertices of times of different ranges to a given graph
+    """
     graph.add_vertex('Quick (0 ~ 20 mins)', 'times')
     graph.add_vertex('Moderate (20 ~ 40 mins)', 'times')
     graph.add_vertex('Lengthy (40 ~ 60 mins)', 'times')
