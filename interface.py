@@ -1,11 +1,10 @@
 
-import textwrap
-import webbrowser
+import graphs
 import io
-import python_ta
 import pygame
 import requests
-import graphs
+import textwrap
+import webbrowser
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
@@ -14,7 +13,62 @@ MONTSERRAT = 'assets/Montserrat-SemiBold.ttf'
 HELVETICA = 'assets/Helvetica-Bold.ttf'
 
 
-def run_game():
+class MultipleToggle:
+    """
+    Multiple toggle buttons Instance
+    """
+
+    def __init__(self, buttons: list):
+        self.buttons = buttons
+        if any([button.clicked is True for button in self.buttons]):
+            self.status = True
+        else:
+            self.status = False
+        if self.status is True:
+            self.allowed_toggle = False
+        else:
+            self.allowed_toggle = True
+
+    def get_status(self):
+        """
+        returns the clicked status of the button
+        """
+        return [button.clicked for button in self.buttons]
+
+    def get_clicked(self):
+        """
+        Returns the clicked button
+        """
+        for button in self.buttons:
+            if button.clicked:
+                return button
+
+    def allowed_toggle(self):
+        """
+        returns the allowance of the button to be toggled
+        """
+        return self.allowed_toggle
+
+    def update_toggle_state(self, toggled_button):
+        """
+        Ensures only the toggled_button remains toggled, untoggling others.
+        """
+        for button in self.buttons:
+            if button != toggled_button:
+                button.untoggle()
+
+    def draw(self):
+        """
+        draws the button on to the screen
+        """
+        for button in self.buttons:
+            button.draw()
+
+
+def run_game() -> None:
+    """
+    Runs the main pygame interface
+    """
     logo_img = pygame.image.load('assets/logo.png')
 
     pygame.init()
@@ -71,7 +125,7 @@ def run_game():
     class Button:
         """Button Instance"""
 
-        def __init__(self, name, x, y, image, image_pressed, scale):
+        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface, scale: int):
             width = image.get_width()
             height = image.get_height()
             self.image = pygame.transform.smoothscale(image, (int(width) * scale, int(height) * scale))
@@ -82,7 +136,7 @@ def run_game():
             self.clicked = False
             self.name = name
 
-        def draw(self):
+        def draw(self) -> bool:
             """
                 Draws
             """
@@ -106,7 +160,7 @@ def run_game():
             return action
 
     class Toggle(Button):
-        def __init__(self, name, x, y, image, image_hover, image_pressed, image_pressed_hover, scale_norm,
+        def __init__(self, name: str, x, y, image, image_hover, image_pressed, image_pressed_hover, scale_norm,
                      scale_pressed):
             super().__init__(name, x, y, image, image_pressed, scale_norm)
             self.multiple_toggle_instance = None
@@ -126,7 +180,7 @@ def run_game():
             self.click_pending = False  # To track if a click is in process
             self.name = name
 
-        def set_multiple_toggle(self, multiple_toggle_instance):
+        def set_multiple_toggle(self, multiple_toggle_instance: MultipleToggle) -> None:
             """
             Set the multipletoggle instance for toggle buttons
             """
@@ -332,56 +386,6 @@ def run_game():
 
             return action
 
-    class MultipleToggle:
-        """
-        Multiple toggle buttons Instance
-        """
-
-        def __init__(self, buttons: list):
-            self.buttons = buttons
-            if any([button.clicked is True for button in self.buttons]):
-                self.status = True
-            else:
-                self.status = False
-            if self.status is True:
-                self.allowed_toggle = False
-            else:
-                self.allowed_toggle = True
-
-        def get_status(self):
-            """
-            returns the clicked status of the button
-            """
-            return [button.clicked for button in self.buttons]
-
-        def get_clicked(self):
-            """
-            Returns the clicked button
-            """
-            for button in self.buttons:
-                if button.clicked:
-                    return button
-
-        def allowed_toggle(self):
-            """
-            returns the allowance of the button to be toggled
-            """
-            return self.allowed_toggle
-
-        def update_toggle_state(self, toggled_button):
-            """
-            Ensures only the toggled_button remains toggled, untoggling others.
-            """
-            for button in self.buttons:
-                if button != toggled_button:
-                    button.untoggle()
-
-        def draw(self):
-            """
-            draws the button on to the screen
-            """
-            for button in self.buttons:
-                button.draw()
 
     class ButtonWithLink(Button):
         """Button Instance"""
@@ -521,6 +525,7 @@ def run_game():
                     self.next = True
 
     class Difficulty(Interface):
+        """Difficulty Interface Instance"""
         def __init__(self):
             super().__init__()
             self.status = True
@@ -614,6 +619,7 @@ def run_game():
                     self.next = True
 
     class FoodDisplay(Interface):
+        """Foods Interface Instance"""
         def __init__(self):
             super().__init__()
             self.status = True
@@ -630,7 +636,7 @@ def run_game():
 
         def make_button(self, rec_food):
             """
-            runs the interface
+            Makes the button isntance for the specific food interface
             """
             temp_list = []
             for i in range(len(rec_food)):
@@ -733,6 +739,7 @@ def run_game():
             return self.chosen_url
 
     class FoodIndividual(Interface):
+        """The interface after a food was selected"""
         def __init__(self):
             super().__init__()
             self.next = False
@@ -785,11 +792,11 @@ def run_game():
         def __init__(self):
             self.active_screen = None
 
-        def set_active_screen(self, active_screen):
+        def set_active_screen(self, current_screen):
             """
             sets the status of the active screen
             """
-            self.active_screen = active_screen
+            self.active_screen = current_screen
 
         def get_active_screen(self):
             """
@@ -946,7 +953,7 @@ if __name__ == '__main__':
     import python_ta
 
     python_ta.check_all(config={
-        'extra-imports': [textwrap, webbrowser, io, pygame, requests, graphs],  # the names (strs) of imported modules
-        'allowed-io': [pygame.init(), pygame.QUIT, pygame.quit()],  # the names (strs) of functions that call print/open/input
+        'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],  # the names (strs) of imported modules
+        'allowed-io': [],
         'max-line-length': 120
     })

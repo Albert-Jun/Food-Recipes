@@ -1,7 +1,24 @@
-
 import json
 
 import interface
+
+
+def valid_int_input(expected_int: list, input_quest: str):
+    """
+    Checks if the expected input is found
+    """
+    run = True
+    actual_input = None
+    while run:
+        try:
+            actual_input = int(input(f'{input_quest}'))
+            if actual_input not in expected_int:
+                raise ValueError
+            run = False
+        except ValueError:
+            print(f'{input_quest}')
+            print('INVALID INPUT!')
+    return actual_input
 
 
 def run_app():
@@ -13,33 +30,18 @@ def run_app():
     print('=' * 50)
     print('1. Run app')
     print('2. Add Recipe')
-    temp_list = [1, 2]
-    user_input = 1
-    run = True
-    while run:
-        try:
-            user_input = int(input('Enter a number (1/2): '))
-            # Adjust the user input to match the list indexing (starting from 0)
-            user_input = temp_list[user_input - 1]
-            run = False
-        except ValueError:
-            print('=' * 50)
-            print('FOOD MOOD')
-            print('=' * 50)
-            print('1. Run app')
-            print('2. Add Recipe')
-            print('Please enter a valid number (1/2): ')
-        except IndexError:
-            print('=' * 50)
-            print('FOOD MOOD')
-            print('=' * 50)
-            print('1. Run app')
-            print('2. Add Recipe')
-            print('Please enter a valid number (1/2): ')
+    print('3. View Recipe')
+    print('4. EXIT')
+    temp_list = [1, 2, 3, 4]
+    user_input = valid_int_input(temp_list, 'Enter a number (1 - 4): ')
     if user_input == 1:
         interface.run_game()
+    elif user_input == 2:
+        add_recipe('recipes_user_added.json')
+    elif user_input == 3:
+        view_recipe('recipes_user_added.json')
     else:
-        add_recipe('recipes.json')
+        return None
 
 
 def add_recipe_ui(filename):
@@ -48,21 +50,21 @@ def add_recipe_ui(filename):
     """
     with open(filename, 'r') as f:
         data = json.load(f)
-    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}',
-                 'image': input('Enter a valid URL of the image of the recipe: '),
-                 'name': input('Enter a valid name of the food: '),
+    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}', 'name': input('Enter a valid name of the food: '),
                  'description': input('Enter a valid description of the food: '), 'author': '-',
-                 'ratting': input('Enter a valid rating of recipe (1-5): '),
-                 'ingredients': input('Enter the ingredients as a list: '),
-                 'steps': input('Enter the steps as a list: '),
-                 'nutrients': input('If any enter the nutrients as a dictionary, else enter {}: ')}
-    url_input = input('Enter a valid URL of the recipe: ')
-    temp_dict['url']: url_input
-    prep_time = input('Enter the preperation time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
+                 'rattings': valid_int_input([1, 2, 3, 4, 5], 'Enter a valid rating of recipe (1-5): ')}
+    prep_time = input('Enter the preparation time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     cook_time = input('Enter the cooking time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
-    temp_dict['times'] = {'Preperation': prep_time, 'Cooking': cook_time}
-    temp_dict['serves'] = int(input('Enter serves: '))
-    temp_dict['difficult'] = input('Enter difficulty (Easy or Challenging): ')
+    temp_dict['times'] = {'Preparation': prep_time, 'Cooking': cook_time}
+    serves = ['1 ~ 2 Serves', '2 ~ 4 Serves', '5+ Serves']
+    for i in range(len(serves)):
+        print(f'{i + 1}. {serves[i]}')
+    temp_dict['serves'] = valid_int_input([1, 2, 3], 'Choose one that applies(1 - 3): ')
+    difficulty = ['Easy', 'Challenging']
+    for i in range(len(difficulty)):
+        print(f'{i + 1}. {difficulty[i]}')
+    difficulty_input = valid_int_input([1, 2], 'Choose difficulty(1/2): ')
+    temp_dict['difficult'] = difficulty_input
     temp_dict['vote_count'] = 0
     categories = ['Recipes with Animal Products',
                   'Vegan Recipes',
@@ -71,7 +73,7 @@ def add_recipe_ui(filename):
                   'Miscellaneous']
     for i in range(len(categories)):
         print(f'{i + 1}. {categories[i]}')
-    subcategory_input = int(input('Choose one subcategory above(1-5): '))
+    subcategory_input = valid_int_input([1, 2, 3, 4, 5], 'Choose one subcategory above(1-5): ')
     temp_dict['subcategory'] = categories[subcategory_input - 1]
     temp_dict['dish_type'] = categories[subcategory_input - 1]
     temp_dict['maincategory'] = 'recipes'
@@ -97,6 +99,25 @@ def add_recipe(filename):
     # Save the updated data back to the JSON file
     with open(filename, 'w') as f:
         json.dump(existing_data, f, indent=4)
+    run_app()
+
+
+def view_recipe(filename):
+    """View the current user added recipes"""
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    for lines in data:
+        print('=' * 50)
+        print(lines['name'])
+        print('=' * 50)
+        print(f"'{lines['description']}")
+        print(f'Ratings: {lines["rattings"]}')
+        print(f'Prep Time: {lines["times"]["Preparation"]}')
+        print(f'Cooking Time: {lines["times"]["Cooking"]}')
+        print(f'Difficulty: {lines["difficult"]}')
+        print(f'Subcategory: {lines["subcategory"]}')
+        print('-' * 50)
+    run_app()
 
 
 if __name__ == "__main__":
