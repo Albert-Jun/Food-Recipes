@@ -1,8 +1,8 @@
-import json
+
 import textwrap
 import webbrowser
 import io
-
+import python_ta
 import pygame
 import requests
 import graphs
@@ -26,15 +26,10 @@ def run_game():
     medium_font_size = 20
 
     # Load the custom font
-    font_grobold_small = pygame.font.Font(GROBOLD, small_font_size)
-    font_grobold_medium = pygame.font.Font(GROBOLD, medium_font_size)
-    font_montserrat_small = pygame.font.Font(MONTSERRAT, small_font_size)
     font_montserrat_medium = pygame.font.Font(MONTSERRAT, medium_font_size)
     font_helvetica_small = pygame.font.Font(HELVETICA, small_font_size)
-    font_helvetica_medium = pygame.font.Font(HELVETICA, medium_font_size)
 
     # Buttons
-    start_img = pygame.image.load('assets/buttons/start_btn.png').convert_alpha()
     next_img = pygame.image.load('assets/buttons/next_btn.png').convert_alpha()
     food_img = pygame.image.load('assets/buttons/food_btn.png').convert_alpha()
     food_name_img = pygame.image.load('assets/buttons/food_name_btn.png').convert_alpha()
@@ -46,7 +41,6 @@ def run_game():
     next_img_food = pygame.image.load('assets/buttons/next_btn_food.png').convert_alpha()
 
     # Buttons Hover
-    start_img_hover = pygame.image.load('assets/buttons/start_btn_hover.png').convert_alpha()
     next_img_hover = pygame.image.load('assets/buttons/next_btn_hover.png').convert_alpha()
     food_img_hover = pygame.image.load('assets/buttons/food_btn_hover.png').convert_alpha()
     recipe_img_hover = pygame.image.load('assets/buttons/recipe_btn_hover.png').convert_alpha()
@@ -64,23 +58,15 @@ def run_game():
     subcat_img = pygame.image.load('assets/subcat_bg.png')
     difficult_img = pygame.image.load('assets/difficulty_bg.png')
     serves_img = pygame.image.load('assets/servings_bg.png')
-    nutrients_img = pygame.image.load('assets/nutrients.png')
     times_img = pygame.image.load('assets/time_bg.png')
     food_bg = pygame.image.load('assets/food_bg.png')
     last_bg = pygame.image.load('assets/last_bg.png')
 
-    bg_img = pygame.image.load('assets/bg_img.png')
     bg_img2 = pygame.image.load('assets/bg_img3.png')
     bg_img_food = pygame.image.load('assets/bg_img_food.png')
     nofood_img = pygame.image.load('assets/nofood.png')
     logo_home = pygame.image.load('assets/logo.png')
     logo_home_hover = pygame.image.load('assets/logo_hover.png')
-
-    food1_img = pygame.image.load('assets/food1.jpg')
-    food2_img = pygame.image.load('assets/food2.jpg')
-    food3_img = pygame.image.load('assets/food3.jpg')
-    food4_img = pygame.image.load('assets/food4.jpg')
-    food5_img = pygame.image.load('assets/food5.jpg')
 
     class Button:
         """Button Instance"""
@@ -89,7 +75,8 @@ def run_game():
             width = image.get_width()
             height = image.get_height()
             self.image = pygame.transform.smoothscale(image, (int(width) * scale, int(height) * scale))
-            self.image_pressed = pygame.transform.smoothscale(image_pressed, (int(width) * scale, int(height) * scale))
+            self.image_pressed = pygame.transform.smoothscale(image_pressed,
+                                                              (int(width) * scale, int(height) * scale))
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
             self.clicked = False
@@ -129,7 +116,8 @@ def run_game():
             self.image_hover = pygame.transform.smoothscale(image_hover,
                                                             (int(width * scale_norm), int(height * scale_norm)))
             self.image_pressed = pygame.transform.smoothscale(image_pressed,
-                                                              (int(width * scale_pressed), int(height * scale_pressed)))
+                                                              (int(width * scale_pressed),
+                                                               int(height * scale_pressed)))
             self.image_pressed_hover = pygame.transform.smoothscale(image_pressed_hover,
                                                                     (int(width * scale_pressed),
                                                                      int(height * scale_pressed)))
@@ -139,6 +127,9 @@ def run_game():
             self.name = name
 
         def set_multiple_toggle(self, multiple_toggle_instance):
+            """
+            Set the multipletoggle instance for toggle buttons
+            """
             self.multiple_toggle_instance = multiple_toggle_instance
 
         def draw(self):
@@ -430,36 +421,23 @@ def run_game():
 
     # start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
     start_button = Button('start_btn', 150, 230, logo_home, logo_home_hover, 1)
-    next_button = Button('next_btn', 500, 650, next_img, next_img_hover, 1 / 2)
     next_button2 = Button('next_btn2', 500, 620, next_img, next_img_hover, 1 / 2)
     back_button = Button('back_btn', 10, 20, back_img, back_img_hover, 1)
     close_button = Button('close_btn', 550, 20, close_img, close_img_hover, 1)
     back_button_food = Button('back_btn', 430, 640, back_img_food, back_img_food_hover, 1)
     next_button_food = Button('back_btn', 550, 640, next_img_food, next_img_food_hover, 1)
 
-    toggle_button1 = Toggle('tog_btn1', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button2 = Toggle('tog_btn2', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button3 = Toggle('tog_btn3', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button4 = Toggle('tog_btn4', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button5 = Toggle('Vegan Recipes', 100, 410, toggle_img, toggle_hover_img, toggle_clicked_img,
                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button6 = Toggle('Recipes with Animal Products', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button7 = Toggle('Vegetarian Recipes', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
-                            toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button6 = Toggle('Recipes with Animal Products', 100, 210, toggle_img, toggle_hover_img,
+                            toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button7 = Toggle('Vegetarian Recipes', 100, 310, toggle_img, toggle_hover_img,
+                            toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button8 = Toggle('Miscellaneous', 100, 510, toggle_img, toggle_hover_img, toggle_clicked_img,
                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button9 = Toggle('Challenging', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button10 = Toggle('Easy', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button11 = Toggle('tog_btn11', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button12 = Toggle('tog_btn12', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
                              toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button13 = Toggle('5+', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
                              toggle_hover_clicked_img, 1 / 2, 1 / 2)
@@ -467,31 +445,20 @@ def run_game():
                              toggle_hover_clicked_img, 1 / 2, 1 / 2)
     toggle_button15 = Toggle('3 ~ 4', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
                              toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button16 = Toggle('tog_btn16', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button17 = Toggle('tog_btn17', 100, 400, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button18 = Toggle('tog_btn18', 100, 200, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button19 = Toggle('tog_btn19', 100, 300, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button20 = Toggle('tog_btn20', 100, 500, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button21 = Toggle('Lengthy (40 ~ 60 mins)', 100, 310, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button22 = Toggle('Quick (0 ~ 20 mins)', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button23 = Toggle('Moderate (20 ~ 40 mins)', 100, 210, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button24 = Toggle('More than 1 hr', 100, 410, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
-    toggle_button25 = Toggle('Meal-Specific Recipes', 100, 110, toggle_img, toggle_hover_img, toggle_clicked_img,
-                             toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button21 = Toggle('Lengthy (40 ~ 60 mins)', 100, 310, toggle_img, toggle_hover_img,
+                             toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button22 = Toggle('Quick (0 ~ 20 mins)', 100, 110, toggle_img, toggle_hover_img,
+                             toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button23 = Toggle('Moderate (20 ~ 40 mins)', 100, 210, toggle_img, toggle_hover_img,
+                             toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button24 = Toggle('More than 1 hr', 100, 410, toggle_img, toggle_hover_img,
+                             toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
+    toggle_button25 = Toggle('Meal-Specific Recipes', 100, 110, toggle_img, toggle_hover_img,
+                             toggle_clicked_img, toggle_hover_clicked_img, 1 / 2, 1 / 2)
 
     toggle_group1 = [toggle_button5, toggle_button6, toggle_button7, toggle_button8, toggle_button25]
     toggle_group2 = [toggle_button9, toggle_button10]
     toggle_group3 = [toggle_button13, toggle_button14, toggle_button15]
-    toggle_group4 = [toggle_button17, toggle_button18, toggle_button19]
     toggle_group5 = [toggle_button21, toggle_button22, toggle_button23, toggle_button24]
 
     all_foods = graphs.build_graph('recipes.json')
@@ -694,13 +661,20 @@ def run_game():
                 except ValueError:
                     left_image = pygame.transform.scale(left_image, (80, 80))
                 temp_list.append(TextImageButton(f'food{i}', x, y, food_img, food_img_hover, 1, text,
-                                                 font_helvetica_small, text_color, text_hover_color, rating, left_image))
+                                                 font_helvetica_small, text_color, text_hover_color, rating, left_image)
+                                 )
             self.button = temp_list
 
         def set_num(self, num):
+            """
+            set the number of the current page of the interface
+            """
             self.num = num
 
         def set_total_page(self, page):
+            """
+            set the number of total pages of the interface
+            """
             self.total_page = page
 
         def run(self, rec_food):
@@ -778,9 +752,10 @@ def run_game():
             screen.blit(food_image_scaled, (225, 50))
             food_name_btn = TextButton('foodname', 135, 300, food_name_img, food_name_img, 1,
                                        chosen_food.text, font_montserrat_medium, (0, 0, 0))
-            food_desc = ButtonDescription('Desc', 60, 350, food_desc_img, food_desc_img, 1, chosen_food_desc,
-                                          HELVETICA, 14, (182, 182, 182))
-            recipe = ButtonWithLink('recipe link', 230, 620, recipe_img, recipe_img_hover, 1, chosen_food_url)
+            food_desc = ButtonDescription('Desc', 60, 350, food_desc_img, food_desc_img,
+                                          1, chosen_food_desc, HELVETICA, 14, (182, 182, 182))
+            recipe = ButtonWithLink('recipe link', 230, 620, recipe_img, recipe_img_hover, 1,
+                                    chosen_food_url)
             food_name_btn.draw()
             food_desc.draw()
             if recipe.draw():
@@ -795,6 +770,9 @@ def run_game():
             self.next = False
 
         def run(self):
+            """
+            runs the interface
+            """
             screen.blit(last_bg, (0, 0))
             if close_button.draw():
                 self.next = True
@@ -807,11 +785,11 @@ def run_game():
         def __init__(self):
             self.active_screen = None
 
-        def set_active_screen(self, screen):
+        def set_active_screen(self, active_screen):
             """
             sets the status of the active screen
             """
-            self.active_screen = screen
+            self.active_screen = active_screen
 
         def get_active_screen(self):
             """
@@ -830,20 +808,6 @@ def run_game():
                     self.active_screen.run(inputs, input2, input3)
                 else:
                     self.active_screen.run()
-
-    def get_food(data):
-        """
-        get the recommended food
-        """
-        with open(data, 'r') as f:
-            file = json.load(f)
-        temp_list = []
-        for i in range(len(file)):
-            temp_list.append(file[i])
-
-        return temp_list
-
-    food_reccommended = get_food('recipes_small.json')
 
     # IMPORTANT
     # for the interface to work it needs to be given a list with the length of exactly 5.
@@ -973,3 +937,16 @@ def run_game():
             run = False
         pygame.display.update()
     pygame.quit()
+
+
+if __name__ == '__main__':
+    # import doctest
+    # doctest.testmod()
+
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': [textwrap, webbrowser, io, pygame, requests, graphs],  # the names (strs) of imported modules
+        'allowed-io': [pygame.init(), pygame.QUIT, pygame.quit()],  # the names (strs) of functions that call print/open/input
+        'max-line-length': 120
+    })
