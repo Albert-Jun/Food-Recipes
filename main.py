@@ -185,6 +185,13 @@ class Graph:
 
 
 def combine_times(times: dict) -> int:
+    """
+    Given a dictionary that maps Preparation and/or Cooking to their times,
+    returns the combined times as an integer of minutes.
+
+    Preconditions:
+        - Preparation in times or Cooking in times
+    """
     prep_time = times.get('Preparation', '0')
     cooking_time = times.get('Cooking', '0')
 
@@ -192,6 +199,10 @@ def combine_times(times: dict) -> int:
 
 
 def calc_time(time: str) -> int:
+    """
+    Given a string of time (ex. 4 hrs and 30 minutes), returns the number of minutes as an integer.
+    If given a range such as 20 minutes - 40 minutes, it takes the longest option.
+    """
     if 'No Time' in time:
         return 0
 
@@ -237,7 +248,7 @@ def add_serves(graph: Graph) -> None:
 
 def add_times(graph: Graph) -> None:
     """
-    Adds vertices of times of different ranges to a given graph
+    Adds time vertices of different ranges to the given graph
     """
     graph.add_vertex('Quick (0 ~ 20 mins)', 'times')
     graph.add_vertex('Moderate (20 ~ 40 mins)', 'times')
@@ -278,6 +289,9 @@ def add_edge_serves(food: str, serves: int, graph: Graph) -> None:
 
 
 def add_edge_times(food: str, times: dict, graph: Graph) -> None:
+    """
+    Adds an edge between a given food vertex and its respective time range vertex given a graph.
+    """
     combined_times = combine_times(times)
     if combined_times <= 20:
         graph.add_edge(food, 'Quick (0 ~ 20 mins)')
