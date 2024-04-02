@@ -1,9 +1,14 @@
-import graphs
+"""
+Main interface of the app
+"""
+from typing import Any, Optional
+
 import io
-import pygame
-import requests
 import textwrap
 import webbrowser
+import requests
+import pygame
+import graphs
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
@@ -20,7 +25,7 @@ class MultipleToggle:
     status: bool
     allowed_toggle: bool
 
-    def __init__(self, buttons: list):
+    def __init__(self, buttons: list) -> None:
         self.buttons = buttons
         if any([button.clicked is True for button in self.buttons]):
             self.status = True
@@ -31,27 +36,28 @@ class MultipleToggle:
         else:
             self.allowed_toggle = True
 
-    def get_status(self):
+    def get_status(self) -> list:
         """
         returns the clicked status of the button
         """
         return [button.clicked for button in self.buttons]
 
-    def get_clicked(self):
+    def get_clicked(self) -> Any:
         """
         Returns the clicked button
         """
         for button in self.buttons:
             if button.clicked:
                 return button
+        return None
 
-    def allowed_toggle(self):
+    def allowed_toggle(self) -> bool:
         """
         returns the allowance of the button to be toggled
         """
         return self.allowed_toggle
 
-    def update_toggle_state(self, toggled_button):
+    def update_toggle_state(self, toggled_button: Any) -> None:
         """
         Ensures only the toggled_button remains toggled, untoggling others.
         """
@@ -59,7 +65,7 @@ class MultipleToggle:
             if button != toggled_button:
                 button.untoggle()
 
-    def draw(self):
+    def draw(self) -> None:
         """
         draws the button on to the screen
         """
@@ -126,9 +132,17 @@ def run_game() -> None:
 
     class Button:
         """Button Instance"""
+        name: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_pressed: pygame.Surface
+        scale: float
+        clicked: bool
+        rect: pygame.rect
 
         def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface,
-                     scale: float):
+                     scale: float) -> None:
             width = image.get_width()
             height = image.get_height()
             self.image = pygame.transform.smoothscale(image, (int(width) * scale, int(height) * scale))
@@ -163,9 +177,24 @@ def run_game() -> None:
             return action
 
     class Toggle(Button):
+        """Modifided button Instance to be able to be toggled on and offs"""
+        name: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_hover: pygame.Surface
+        image_pressed: pygame.Surface
+        image_pressed_hover: pygame.Surface
+        scale_norm: float
+        scale_pressed: float
+        rect: pygame.rect
+        multiple_toggle_instance: MultipleToggle | None
+        clicked: bool
+        click_pending: bool
+
         def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_hover: pygame.Surface,
                      image_pressed: pygame.Surface, image_pressed_hover: pygame.Surface, scale_norm: float,
-                     scale_pressed: float):
+                     scale_pressed: float) -> None:
             super().__init__(name, x, y, image, image_pressed, scale_norm)
             self.multiple_toggle_instance = None
             width = image.get_width()
@@ -190,7 +219,7 @@ def run_game() -> None:
             """
             self.multiple_toggle_instance = multiple_toggle_instance
 
-        def draw(self):
+        def draw(self) -> bool:
             pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()[0]
 
@@ -227,13 +256,13 @@ def run_game() -> None:
 
             return self.clicked
 
-        def set_allowed_click(self, allow: bool):
+        def set_allowed_click(self, allow: bool) -> None:
             """
             set when a click is allowed
             """
             self.click_pending = allow
 
-        def untoggle(self):
+        def untoggle(self) -> None:
             """
             Sets the button's clicked state to False.
             """
@@ -242,9 +271,23 @@ def run_game() -> None:
 
     class TextButton(Button):
         """Button with text, image, and star rating that changes text color on hover."""
+        name: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_pressed: pygame.Surface
+        scale: float
+        text: str
+        font: pygame.font.Font
+        text_color: tuple[int, int, int]
+        current_text_color: tuple[int, int, int]
+        text_surface: pygame.Surface
+        text_x: int
+        text_y: int
 
-        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface, scale: float
-                     , text: str, font: pygame.font.Font, text_color: tuple[int, int, int]):
+        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface,
+                     scale: float,
+                     text: str, font: pygame.font.Font, text_color: tuple[int, int, int]) -> None:
             super().__init__(name, x, y, image, image_pressed, scale)
             self.text = text
             self.font = font
@@ -258,7 +301,7 @@ def run_game() -> None:
             self.text_x = self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2
             self.text_y = self.rect.y + (self.rect.height - self.text_surface.get_height()) // 2
 
-        def draw(self):
+        def draw(self) -> bool:
             """
             Draws the button, text, and star rating on top of it within the button bounds.
             Adjusts the text color based on mouse hover.
@@ -270,10 +313,29 @@ def run_game() -> None:
 
     class TextImageButton(Button):
         """Button with text, image, and star rating that changes text color on hover."""
+        ame: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_pressed: pygame.Surface
+        scale: float
+        text: str
+        font: pygame.font.Font
+        text_color: tuple[int, int, int]
+        text_hover_color: tuple[int, int, int]
+        current_text_color: tuple[int, int, int]
+        rating: int
+        left_image: pygame.Surface
+        star_full: pygame.Surface
+        star_empty: pygame.Surface
+        text_surface: pygame.Surface
+        text_x: int
+        text_y: int
 
-        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface, scale: float
-                     , text: str, font: pygame.font.Font, text_color: tuple[int, int, int],
-                     text_hover_color: tuple[int, int, int], rating: int, left_image: pygame.Surface):
+        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface,
+                     scale: float,
+                     text: str, font: pygame.font.Font, text_color: tuple[int, int, int],
+                     text_hover_color: tuple[int, int, int], rating: int, left_image: pygame.Surface) -> None:
             super().__init__(name, x, y, image, image_pressed, scale)
             self.text = text
             self.font = font
@@ -295,9 +357,9 @@ def run_game() -> None:
             # Calculate text position to center it on the button, adjusting for the left image
             self.text_x = self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2
             self.text_y = self.rect.y + (
-                    self.rect.height - self.text_surface.get_height() - self.star_full.get_height()) // 2
+                        self.rect.height - self.text_surface.get_height() - self.star_full.get_height()) // 2
 
-        def draw(self):
+        def draw(self) -> bool:
             """
             Draws the button, text, and star rating on top of it within the button bounds.
             Adjusts the text color based on mouse hover.
@@ -325,8 +387,7 @@ def run_game() -> None:
             screen.blit(self.text_surface, (self.text_x, self.text_y))
 
             # Render the star rating below the text
-            stars_x_base = self.text_x + (
-                    self.text_surface.get_width() - 5 * self.star_full.get_width() - 4 * 5) / 2
+            stars_x_base = self.text_x + (self.text_surface.get_width() - 5 * self.star_full.get_width() - 4 * 5) / 2
             # Center stars relative to text
             for i in range(5):
                 star_x = stars_x_base + i * (self.star_full.get_width() + 5)  # Adjust spacing as needed
@@ -340,10 +401,23 @@ def run_game() -> None:
 
     class ButtonDescription(Button):
         """Extended Button class with text description capability that wraps text to fit inside the button."""
+        name: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_pressed: pygame.Surface
+        scale: float
+        description: str
+        font: pygame.font.Font
+        font_path: str
+        font_size: int
+        text_color: tuple[int, int, int]
+        text_surfaces: list
+        text_start_y: int
 
         def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface,
-                     scale: float,
-                     description: str, font_path: str, font_size: int, text_color: tuple[int, int, int]):
+                     scale: float, description: str, font_path: str, font_size: int, text_color: tuple[int, int, int]) \
+                -> None:
             super().__init__(name, x, y, image, image_pressed, scale)
             self.description = description
             self.font_path = font_path
@@ -357,7 +431,7 @@ def run_game() -> None:
             self.text_surfaces = []
             self.render_wrapped_text(description, 700)  # Pass the available width for text
 
-        def render_wrapped_text(self, text: str, available_width: int):
+        def render_wrapped_text(self, text: str, available_width: int) -> None:
             """Renders wrapped text to fit inside the button."""
             # Estimate average character width for the current font and size
             average_char_width = self.font.size("A")[0]
@@ -379,7 +453,7 @@ def run_game() -> None:
             # Adjust starting y position to vertically center the block of text
             self.text_start_y = self.rect.y + (self.rect.height - total_text_height) // 2
 
-        def draw(self):
+        def draw(self) -> bool:
             """
             Draws the button and the wrapped text description on top of it, ensuring it fits within the button.
             """
@@ -396,13 +470,21 @@ def run_game() -> None:
 
     class ButtonWithLink(Button):
         """Button Instance"""
+        name: str
+        x: int
+        y: int
+        image: pygame.Surface
+        image_pressed: pygame.Surface
+        scale: float
+        link: str
 
-        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface, scale: float,
-                     link: str):
+        def __init__(self, name: str, x: int, y: int, image: pygame.Surface, image_pressed: pygame.Surface,
+                     scale: float,
+                     link: str) -> None:
             super().__init__(name, x, y, image, image_pressed, scale)
             self.link = link
 
-        def draw(self):
+        def draw(self) -> bool:
             """
                 Draws
             """
@@ -425,7 +507,7 @@ def run_game() -> None:
 
             return action
 
-        def get_link(self):
+        def get_link(self) -> str:
             """
             returns the link associated with the button
             """
@@ -482,18 +564,26 @@ def run_game() -> None:
         """
         Interface Instance
         """
+        status: bool
 
-        def __init__(self):
+        def __init__(self) -> None:
             self.status = True
 
     class MainMenu(Interface):
-        def __init__(self):
+        """
+        Main Menu Interface Instance (Logo Menu)
+        """
+        status: bool
+        start: bool
+        option: bool
+
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.start = False
             self.option = False
 
-        def run(self):
+        def run(self) -> None:
             """
             runs the interface
             """
@@ -504,13 +594,20 @@ def run_game() -> None:
                 self.start = True
 
     class Subcatergory(Interface):
-        def __init__(self):
+        """
+        Subcatergory Interface Instance
+        """
+        status: bool
+        toggle: bool
+        next: bool
+
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.toggle = False
             self.next = False
 
-        def run(self, buttons: list):
+        def run(self, buttons: list) -> None:
             """
             runs the interface
             """
@@ -533,15 +630,20 @@ def run_game() -> None:
                     self.next = True
 
     class Difficulty(Interface):
-        """Difficulty Interface Instance"""
+        """
+        Difficulty Interface Instance
+        """
+        status: bool
+        toggle: bool
+        next: bool
 
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.toggle = False
             self.next = False
 
-        def run(self, buttons: list):
+        def run(self, buttons: list) -> None:
             """
             runs the interface
             """
@@ -564,13 +666,20 @@ def run_game() -> None:
                     self.next = True
 
     class Serves(Interface):
-        def __init__(self):
+        """
+        Serves selector Interface Instance
+        """
+        status: bool
+        toggle: bool
+        next: bool
+
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.toggle = False
             self.next = False
 
-        def run(self, buttons: list):
+        def run(self, buttons: list) -> None:
             """
             runs the interface
             """
@@ -593,13 +702,20 @@ def run_game() -> None:
                     self.next = True
 
     class Times(Interface):
-        def __init__(self):
+        """
+        Cooking Time selector Interface Instance
+        """
+        status: bool
+        toggle: bool
+        next: bool
+
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.toggle = False
             self.next = False
 
-        def run(self, buttons: list):
+        def run(self, buttons: list) -> None:
             """
             runs the interface
             """
@@ -629,8 +745,23 @@ def run_game() -> None:
 
     class FoodDisplay(Interface):
         """Foods Interface Instance"""
+        status: bool
+        toggle1: bool
+        toggle2: bool
+        toggle3: bool
+        toggle4: bool
+        food: bool
+        next: bool
+        back: bool
+        first: bool
+        num: int | None
+        total_page: int | None
+        button: list
+        chosen_button: TextImageButton | None
+        chosen_desc: str | None
+        chosen_url: str | None
 
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
             self.status = True
             self.toggle1 = False
@@ -643,8 +774,11 @@ def run_game() -> None:
             self.first = True
             self.num = None
             self.total_page = None
+            self.chosen_desc = None
+            self.chosen_url = None
+            self.chosen_button = None
 
-        def make_button(self, rec_food: list):
+        def make_button(self, rec_food: list) -> None:
             """
             Makes the button isntance for the specific food interface
             """
@@ -681,19 +815,19 @@ def run_game() -> None:
                                  )
             self.button = temp_list
 
-        def set_num(self, num: int):
+        def set_num(self, num: int) -> None:
             """
             set the number of the current page of the interface
             """
             self.num = num
 
-        def set_total_page(self, page: int):
+        def set_total_page(self, page: int) -> None:
             """
             set the number of total pages of the interface
             """
             self.total_page = page
 
-        def run(self, rec_food: list):
+        def run(self, rec_food: list) -> bool:
             """
             runs the interface
             """
@@ -710,7 +844,7 @@ def run_game() -> None:
                     return True
             if len(self.button) == 0:
                 screen.blit(nofood_img, (0, 0))
-                return
+                return False
 
             if self.num > 1:
                 if back_button_food.draw():
@@ -721,28 +855,32 @@ def run_game() -> None:
                     if next_button_food.draw():
                         self.next = True
                 else:
-                    return
+                    return False
 
             if self.num < self.total_page:
                 if next_button_food.draw():
                     self.next = True
+                    return True
+                return False
             else:
                 if back_button_food.draw():
                     self.back = True
+                    return True
+                return False
 
-        def get_chosen(self):
+        def get_chosen(self) -> TextImageButton:
             """
             returns the chosen button
             """
             return self.chosen_button
 
-        def get_chosen_desc(self):
+        def get_chosen_desc(self) -> str:
             """
             returns the chosen button's description
             """
             return self.chosen_desc
 
-        def get_chosen_url(self):
+        def get_chosen_url(self) -> str:
             """
             returns the chosen button's url
             """
@@ -750,13 +888,16 @@ def run_game() -> None:
 
     class FoodIndividual(Interface):
         """The interface after a food was selected"""
+        next: bool
+        back: bool
+        link: str
 
-        def __init__(self):
+        def __init__(self) -> None:
             super().__init__()
             self.next = False
             self.back = False
 
-        def run(self, chosen_food: TextImageButton, chosen_food_desc: str, chosen_food_url: str):
+        def run(self, chosen_food: TextImageButton, chosen_food_desc: str, chosen_food_url: str) -> None:
             """
             runs the interface
             """
@@ -781,48 +922,57 @@ def run_game() -> None:
                 self.link = recipe.link
             if back_button.draw():
                 self.back = True
+            return None
 
     class Closing(Interface):
-        def __init__(self):
+        """
+        Closing page Interface Instance
+        """
+        next: bool
+
+        def __init__(self) -> None:
             super().__init__()
             self.next = False
 
-        def run(self):
+        def run(self) -> None:
             """
             runs the interface
             """
             screen.blit(last_bg, (0, 0))
             if close_button.draw():
                 self.next = True
+            return None
 
     class ScreenManager:
         """
         Instance that manages the screen in pygame
         """
+        active_screen: (Interface | MainMenu | Subcatergory | Difficulty |
+                        Serves | Times | FoodDisplay | FoodIndividual | Closing | None)
 
-        def __init__(self):
+        def __init__(self) -> None:
             self.active_screen = None
 
-        def set_active_screen(self, current_screen: Interface):
+        def set_active_screen(self, current_screen: Interface) -> None:
             """
             sets the status of the active screen
             """
             self.active_screen = current_screen
 
-        def get_active_screen(self):
+        def get_active_screen(self) -> Interface:
             """
             return the current active screen
             """
             return self.active_screen
 
-        def update(self, inputs=None, input2=None, input3=None):
+        def update(self, inputs: Any = None, input2: Optional[Any] = None, input3: Optional[Any] = None) -> None:
             """
             updates the current active screen
             """
             if self.active_screen:
                 if type(self.active_screen) in {Subcatergory, Difficulty, Serves, Times, FoodDisplay}:
                     self.active_screen.run(inputs)
-                elif type(self.active_screen) is FoodIndividual:
+                elif isinstance(self.active_screen, FoodIndividual):
                     self.active_screen.run(inputs, input2, input3)
                 else:
                     self.active_screen.run()
@@ -966,6 +1116,6 @@ if __name__ == '__main__':
     python_ta.check_all(config={
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],
         # the names (strs) of imported modules
-        'allowed-io': [],
+        'allowed-io': ["print(f'{self.name} is untoggled')"],
         'max-line-length': 120
     })
