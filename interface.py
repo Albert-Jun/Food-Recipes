@@ -9,6 +9,10 @@ import graphs
 
 SCREEN_HEIGHT = 700
 SCREEN_WIDTH = 700
+GROBOLD = 'assets/GROBOLD.ttf'
+MONTSERRAT = 'assets/Montserrat-SemiBold.ttf'
+HELVETICA = 'assets/Helvetica-Bold.ttf'
+
 
 def run_game():
     logo_img = pygame.image.load('assets/logo.png')
@@ -18,9 +22,6 @@ def run_game():
     pygame.display.set_caption('FOOD MOOD')
     pygame.display.set_icon(logo_img)
 
-    GROBOLD = 'assets/GROBOLD.ttf'
-    MONTSERRAT = 'assets/Montserrat-SemiBold.ttf'
-    HELVETICA = 'assets/Helvetica-Bold.ttf'
     small_font_size = 14
     medium_font_size = 20
 
@@ -81,7 +82,6 @@ def run_game():
     food4_img = pygame.image.load('assets/food4.jpg')
     food5_img = pygame.image.load('assets/food5.jpg')
 
-
     class Button:
         """Button Instance"""
 
@@ -118,19 +118,21 @@ def run_game():
 
             return action
 
-
     class Toggle(Button):
-        def __init__(self, name, x, y, image, image_hover, image_pressed, image_pressed_hover, scale_norm, scale_pressed):
+        def __init__(self, name, x, y, image, image_hover, image_pressed, image_pressed_hover, scale_norm,
+                     scale_pressed):
             super().__init__(name, x, y, image, image_pressed, scale_norm)
             self.multiple_toggle_instance = None
             width = image.get_width()
             height = image.get_height()
             self.image = pygame.transform.smoothscale(image, (int(width * scale_norm), int(height * scale_norm)))
-            self.image_hover = pygame.transform.smoothscale(image_hover, (int(width * scale_norm), int(height * scale_norm)))
+            self.image_hover = pygame.transform.smoothscale(image_hover,
+                                                            (int(width * scale_norm), int(height * scale_norm)))
             self.image_pressed = pygame.transform.smoothscale(image_pressed,
-                                                        (int(width * scale_pressed), int(height * scale_pressed)))
-            self.image_pressed_hover = pygame.transform.smoothscale(image_pressed_hover,
                                                               (int(width * scale_pressed), int(height * scale_pressed)))
+            self.image_pressed_hover = pygame.transform.smoothscale(image_pressed_hover,
+                                                                    (int(width * scale_pressed),
+                                                                     int(height * scale_pressed)))
             self.rect = self.image.get_rect(topleft=(x, y))
             self.clicked = False
             self.click_pending = False  # To track if a click is in process
@@ -189,8 +191,6 @@ def run_game():
             self.clicked = False
             print(f'{self.name} is untoggled')
 
-
-
     class TextButton(Button):
         """Button with text, image, and star rating that changes text color on hover."""
 
@@ -212,12 +212,11 @@ def run_game():
             """
             Draws the button, text, and star rating on top of it within the button bounds.
             Adjusts the text color based on mouse hover.
-            """ # Assuming 'screen' is defined globally
+            """  # Assuming 'screen' is defined globally
 
             action = super().draw()  # Call the draw method of the base class to draw the button
             screen.blit(self.text_surface, (self.text_x, self.text_y))
             return action
-
 
     class TextImageButton(Button):
         """Button with text, image, and star rating that changes text color on hover."""
@@ -288,7 +287,6 @@ def run_game():
 
             return action
 
-
     class ButtonDescription(Button):
         """Extended Button class with text description capability that wraps text to fit inside the button."""
 
@@ -343,7 +341,6 @@ def run_game():
 
             return action
 
-
     class MultipleToggle:
         """
         Multiple toggle buttons Instance
@@ -395,7 +392,6 @@ def run_game():
             for button in self.buttons:
                 button.draw()
 
-
     class ButtonWithLink(Button):
         """Button Instance"""
 
@@ -431,7 +427,6 @@ def run_game():
             returns the link associated with the button
             """
             return self.link
-
 
     # start_button = Button('start_btn', 230, 230, start_img, start_img_hover, 1)
     start_button = Button('start_btn', 150, 230, logo_home, logo_home_hover, 1)
@@ -501,7 +496,6 @@ def run_game():
 
     all_foods = graphs.build_graph('recipes.json')
 
-
     outputs = []
     recommended_foods = []
 
@@ -512,7 +506,6 @@ def run_game():
 
         def __init__(self):
             self.status = True
-
 
     class MainMenu(Interface):
         def __init__(self):
@@ -530,7 +523,6 @@ def run_game():
 
             if start_button.draw():
                 self.start = True
-
 
     class Subcatergory(Interface):
         def __init__(self):
@@ -561,7 +553,6 @@ def run_game():
                     outputs.append(group.get_clicked().name)
                     self.next = True
 
-
     class Difficulty(Interface):
         def __init__(self):
             super().__init__()
@@ -591,7 +582,6 @@ def run_game():
                     outputs.append(group.get_clicked().name)
                     self.next = True
 
-
     class Serves(Interface):
         def __init__(self):
             super().__init__()
@@ -620,7 +610,6 @@ def run_game():
                 if next_button2.draw():
                     outputs.append(group.get_clicked().name)
                     self.next = True
-
 
     class Times(Interface):
         def __init__(self):
@@ -656,7 +645,6 @@ def run_game():
                         print(output)
                     print('#' * 50)
                     self.next = True
-
 
     class FoodDisplay(Interface):
         def __init__(self):
@@ -706,7 +694,7 @@ def run_game():
                 except ValueError:
                     left_image = pygame.transform.scale(left_image, (80, 80))
                 temp_list.append(TextImageButton(f'food{i}', x, y, food_img, food_img_hover, 1, text,
-                                                 font_grobold_small, text_color, text_hover_color, rating, left_image))
+                                                 font_helvetica_small, text_color, text_hover_color, rating, left_image))
             self.button = temp_list
 
         def set_num(self, num):
@@ -770,7 +758,6 @@ def run_game():
             """
             return self.chosen_url
 
-
     class FoodIndividual(Interface):
         def __init__(self):
             super().__init__()
@@ -802,7 +789,6 @@ def run_game():
             if back_button.draw():
                 self.back = True
 
-
     class Closing(Interface):
         def __init__(self):
             super().__init__()
@@ -812,7 +798,6 @@ def run_game():
             screen.blit(last_bg, (0, 0))
             if close_button.draw():
                 self.next = True
-
 
     class ScreenManager:
         """
@@ -846,7 +831,6 @@ def run_game():
                 else:
                     self.active_screen.run()
 
-
     def get_food(data):
         """
         get the recommended food
@@ -858,7 +842,6 @@ def run_game():
             temp_list.append(file[i])
 
         return temp_list
-
 
     food_reccommended = get_food('recipes_small.json')
 
@@ -880,7 +863,6 @@ def run_game():
 
     screen_manager = ScreenManager()
     screen_manager.set_active_screen(main_menu)
-
 
     run = True
     while run:
@@ -908,7 +890,8 @@ def run_game():
             if screen_manager.get_active_screen() is recipe_menu:
                 screen_manager.update(food_menu.get_chosen(), food_menu.get_chosen_desc(), food_menu.get_chosen_url())
             if screen_manager.get_active_screen() is recipe_menu2:
-                screen_manager.update(food_menu2.get_chosen(), food_menu2.get_chosen_desc(), food_menu2.get_chosen_url())
+                screen_manager.update(food_menu2.get_chosen(), food_menu2.get_chosen_desc(),
+                                      food_menu2.get_chosen_url())
         else:
             screen_manager.update(None)
 
