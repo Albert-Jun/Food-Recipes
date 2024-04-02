@@ -41,24 +41,27 @@ def run_app():
     else:
         add_recipe('recipes.json')
 
+
 def add_recipe_ui(filename):
     """
     User interface instance of add recipe
     """
     with open(filename, 'r') as f:
         data = json.load(f)
-    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}', 'url': input('Enter a valid URL of the recipe: '),
-                 'img': input('Enter a valid URL of the image of the recipe: '),
+    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}',
+                 'image': input('Enter a valid URL of the image of the recipe: '),
                  'name': input('Enter a valid name of the food: '),
                  'description': input('Enter a valid description of the food: '), 'author': '-',
                  'ratting': input('Enter a valid rating of recipe (1-5): '),
                  'ingredients': input('Enter the ingredients as a list: '),
                  'steps': input('Enter the steps as a list: '),
                  'nutrients': input('If any enter the nutrients as a dictionary, else enter {}: ')}
+    url_input = input('Enter a valid URL of the recipe: ')
+    temp_dict['url']: url_input
     prep_time = input('Enter the preperation time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     cook_time = input('Enter the cooking time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     temp_dict['times'] = {'Preperation': prep_time, 'Cooking': cook_time}
-    temp_dict['serves'] = input('Enter serves: ')
+    temp_dict['serves'] = int(input('Enter serves: '))
     temp_dict['difficult'] = input('Enter difficulty (Easy or Challenging): ')
     temp_dict['vote_count'] = 0
     categories = ['Recipes with Animal Products',
@@ -69,8 +72,8 @@ def add_recipe_ui(filename):
     for i in range(len(categories)):
         print(f'{i + 1}. {categories[i]}')
     subcategory_input = int(input('Choose one subcategory above(1-5): '))
-    temp_dict['subcategory'] = categories[subcategory_input]
-    temp_dict['dish_type'] = categories[subcategory_input]
+    temp_dict['subcategory'] = categories[subcategory_input - 1]
+    temp_dict['dish_type'] = categories[subcategory_input - 1]
     temp_dict['maincategory'] = 'recipes'
 
     return temp_dict
