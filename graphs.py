@@ -192,7 +192,7 @@ class Graph:
         foods.sort(key=lambda v: v.rating, reverse=True)
 
         # Return the top 10 food vertices with highest ratings
-        return foods[:5]
+        return foods[:10]
 
 
 def combine_times(times: dict) -> int:
