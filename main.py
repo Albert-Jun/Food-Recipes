@@ -23,7 +23,7 @@ def valid_int_input(expected_int: list, input_quest: str):
 
 def run_app():
     """
-    runs the main app
+    runs the main 'FOOD MOOD' app
     """
     print('=' * 50)
     print('FOOD MOOD')
@@ -46,7 +46,7 @@ def run_app():
 
 def add_recipe_ui(filename):
     """
-    User interface instance of add recipe
+    User interface instance of add recipe.
     """
     with open(filename, 'r') as f:
         data = json.load(f)
