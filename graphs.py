@@ -1,7 +1,12 @@
 """
-Graphs.py
-For Graph Classes
+This Python module contains graph and vertex classes used for representing a recipe network.
+
+Vertices are used to represent various aspects of recipes such as subcategories, difficulty levels, serving sizes,
+preparation times, and individual food items.
+
+The graph class a recipe network where food items are connected based on their attributes.
 """
+
 from __future__ import annotations
 from typing import Any
 import json
