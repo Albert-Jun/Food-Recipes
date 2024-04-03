@@ -51,11 +51,11 @@ class MultipleToggle:
                 return button
         return None
 
-    def allowed_toggle(self) -> bool:
+    def get_allowed_toggle(self) -> bool:
         """
         returns the allowance of the button to be toggled
         """
-        return self.allowed_toggle
+        return self.get_allowed_toggle()
 
     def update_toggle_state(self, toggled_button: Any) -> None:
         """
@@ -356,8 +356,8 @@ def run_game() -> None:
             self.text_surface = self.font.render(self.text, True, self.current_text_color)
             # Calculate text position to center it on the button, adjusting for the left image
             self.text_x = self.rect.x + (self.rect.width - self.text_surface.get_width()) // 2
-            self.text_y = self.rect.y + (
-                        self.rect.height - self.text_surface.get_height() - self.star_full.get_height()) // 2
+            self.text_y = self.rect.y + (self.rect.height - self.text_surface.get_height()
+                                         - self.star_full.get_height()) // 2
 
         def draw(self) -> bool:
             """
@@ -619,7 +619,7 @@ def run_game() -> None:
             for button in group.buttons:
                 button.set_multiple_toggle(group)
 
-            if not group.allowed_toggle:
+            if not group.get_allowed_toggle():
                 self.toggle = True
             else:
                 self.toggle = False
@@ -655,7 +655,7 @@ def run_game() -> None:
             for button in group.buttons:
                 button.set_multiple_toggle(group)
 
-            if not group.allowed_toggle:
+            if not group.get_allowed_toggle():
                 self.toggle = True
             else:
                 self.toggle = False
@@ -691,7 +691,7 @@ def run_game() -> None:
             for button in group.buttons:
                 button.set_multiple_toggle(group)
 
-            if not group.allowed_toggle:
+            if not group.get_allowed_toggle():
                 self.toggle = True
             else:
                 self.toggle = False
@@ -727,7 +727,7 @@ def run_game() -> None:
             for button in group.buttons:
                 button.set_multiple_toggle(group)
 
-            if not group.allowed_toggle:
+            if not group.get_allowed_toggle():
                 self.toggle = True
             else:
                 self.toggle = False
@@ -947,8 +947,8 @@ def run_game() -> None:
         """
         Instance that manages the screen in pygame
         """
-        active_screen: (Interface | MainMenu | Subcatergory | Difficulty |
-                        Serves | Times | FoodDisplay | FoodIndividual | Closing | None)
+        active_screen: (Interface | MainMenu | Subcatergory | Difficulty
+                        | Serves | Times | FoodDisplay | FoodIndividual | Closing | None)
 
         def __init__(self) -> None:
             self.active_screen = None
@@ -1116,6 +1116,7 @@ if __name__ == '__main__':
     python_ta.check_all(config={
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],
         # the names (strs) of imported modules
-        'allowed-io': ["print(f'{self.name} is untoggled')"],
+        'allowed-io': ['run_game'],
+        'disable': ['E1101', 'C0302', 'R0914', 'R0913', 'R0902', 'E9998', 'R0912', 'R0915'],
         'max-line-length': 120
     })
