@@ -1116,7 +1116,6 @@ if __name__ == '__main__':
     python_ta.check_all(config={
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],
         # the names (strs) of imported modules
-        'allowed-io': ['run_game'],
-        'disable': ['E1101', 'C0302', 'R0914', 'R0913', 'R0902', 'E9998', 'R0912', 'R0915'],
+        'allowed-io': ['untoggle', 'draw', 'run', 'run_game'],
         'max-line-length': 120
     })
