@@ -25,7 +25,7 @@ class _Vertex:
     Representation Invariants:
         - self not in self.neighbours
         - all(self in u.neighbours for u in self.neighbours)
-        - self.kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
+        - self.kind in {'subcategory', 'difficult', 'serves', 'times', 'food'}
     """
     item: Any
     kind: str
