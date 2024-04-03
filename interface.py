@@ -55,7 +55,7 @@ class MultipleToggle:
         """
         returns the allowance of the button to be toggled
         """
-        return self.get_allowed_toggle()
+        return self.allowed_toggle
 
     def update_toggle_state(self, toggled_button: Any) -> None:
         """
@@ -232,7 +232,7 @@ def run_game() -> None:
                     if self.clicked:  # If toggled, update state in MultipleToggle
                         self.multiple_toggle_instance.update_toggle_state(self)
                     self.click_pending = False  # Reset click tracking
-                    print(f'{self.name} is Toggled' if self.clicked else f'{self.name} is untoggled')
+                    # print(f'{self.name} is Toggled' if self.clicked else f'{self.name} is untoggled')
 
             if self.rect.collidepoint(pos):
                 if mouse_pressed and not self.click_pending:
@@ -241,7 +241,7 @@ def run_game() -> None:
                     # Only toggle if the mouse was clicked and then released while over the button
                     self.clicked = not self.clicked
                     self.click_pending = False  # Reset click tracking
-                    print(f'{self.name} is Toggled' if self.clicked else f'{self.name} is untoggled')
+                    # print(f'{self.name} is Toggled' if self.clicked else f'{self.name} is untoggled')
 
             if self.rect.collidepoint(pos):
                 if self.clicked is False:
@@ -267,7 +267,7 @@ def run_game() -> None:
             Sets the button's clicked state to False.
             """
             self.clicked = False
-            print(f'{self.name} is untoggled')
+            # print(f'{self.name} is untoggled')
 
     class TextButton(Button):
         """Button with text, image, and star rating that changes text color on hover."""
