@@ -1,3 +1,13 @@
+"""
+This Python module runs the "FOOD MOOD" application, which allows users to interact with a recipe reccomender system.
+Users can run the app, add recipes, view recipes, and exit the application.
+
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) Aref Malekanian, [Name], [Name], [Name]
+"""
+
 import json
 import interface
 
@@ -82,7 +92,11 @@ def add_recipe_ui(filename):
 
 def add_recipe(filename):
     """
-    adds a custom recipe to the recipes file
+    This function adds a custom recipe to the recipes file
+
+    It asks the user to input the name, description, url of the website that has the recipe,
+    rating, prep / cook time, number of serves, difficulty and category of the recipe and writes it
+    into the recipe book txt file.
     """
     try:
         # Try to open the existing file and load its contents
