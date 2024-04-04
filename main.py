@@ -1,9 +1,18 @@
-import json
+"""
+This Python module runs the "FOOD MOOD" application, which allows users to interact with a recipe reccomender system.
+Users can run the app, add recipes, view recipes, and exit the application.
 
+Copyright and Usage Information
+===============================
+
+This file is Copyright (c) Aref Malekanian, Albert Jun, Ahnaf Keenan Ardhito, Alfizza Kenaz
+"""
+
+import json
 import interface
 
 
-def valid_int_input(expected_int: list, input_quest: str):
+def valid_int_input(expected_int: list, input_quest: str) -> int:
     """
     Checks if the expected input is found
     """
@@ -16,19 +25,18 @@ def valid_int_input(expected_int: list, input_quest: str):
                 raise ValueError
             run = False
         except ValueError:
-            print(f'{input_quest}')
             print('INVALID INPUT!')
     return actual_input
 
 
-def run_app():
+def run_app() -> None:
     """
     runs the main 'FOOD MOOD' app
     """
     print('=' * 50)
     print('FOOD MOOD')
     print('=' * 50)
-    print('1. Run app')
+    print('1. Run App')
     print('2. Add Recipe')
     print('3. View Recipe')
     print('4. EXIT')
@@ -36,31 +44,38 @@ def run_app():
     user_input = valid_int_input(temp_list, 'Enter a number (1 - 4): ')
     if user_input == 1:
         interface.run_game()
+        return None
     elif user_input == 2:
-        add_recipe('recipes_user_added.json')
+        add_recipe('recipe_book.json')
+        return None
     elif user_input == 3:
-        view_recipe('recipes_user_added.json')
+        view_recipe('recipe_book.json')
+        return None
     else:
         return None
 
 
-def add_recipe_ui(filename):
+def add_recipe_ui(filename: str) -> dict:
     """
     User interface instance of add recipe.
     """
     with open(filename, 'r') as f:
         data = json.load(f)
-    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}', 'name': input('Enter a valid name of the food: '),
+    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}',
+                 'url': input('Enter a valid url: '),
+                 'name': input('Enter a valid name of the food: '),
                  'description': input('Enter a valid description of the food: '), 'author': '-',
                  'rattings': valid_int_input([1, 2, 3, 4, 5], 'Enter a valid rating of recipe (1-5): ')}
     prep_time = input('Enter the preparation time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     cook_time = input('Enter the cooking time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     temp_dict['times'] = {'Preparation': prep_time, 'Cooking': cook_time}
     serves = ['1 ~ 2 Serves', '2 ~ 4 Serves', '5+ Serves']
+
     for i in range(len(serves)):
         print(f'{i + 1}. {serves[i]}')
     temp_dict['serves'] = valid_int_input([1, 2, 3], 'Choose one that applies(1 - 3): ')
     difficulty = ['Easy', 'Challenging']
+
     for i in range(len(difficulty)):
         print(f'{i + 1}. {difficulty[i]}')
     difficulty_input = valid_int_input([1, 2], 'Choose difficulty(1/2): ')
@@ -81,9 +96,13 @@ def add_recipe_ui(filename):
     return temp_dict
 
 
-def add_recipe(filename):
+def add_recipe(filename: str) -> None:
     """
-    adds a custom recipe to the recipes file
+    This function adds a custom recipe to the recipes file
+
+    It asks the user to input the name, description, url of the website that has the recipe,
+    rating, prep / cook time, number of serves, difficulty and category of the recipe and writes it
+    into the recipe book txt file.
     """
     try:
         # Try to open the existing file and load its contents
@@ -99,24 +118,49 @@ def add_recipe(filename):
     # Save the updated data back to the JSON file
     with open(filename, 'w') as f:
         json.dump(existing_data, f, indent=4)
+
+    print()
     run_app()
 
 
-def view_recipe(filename):
+def view_recipe(filename: str) -> None:
     """View the current user added recipes"""
     with open(filename, 'r') as f:
         data = json.load(f)
+
+    num = 1
+    for line in data:
+        print(f'{num}) {line['name']}')
+        num += 1
+
+    question = f'Choose the recipe number you would like to view (1-{num-1}):'
+    user_input = valid_int_input([x for x in range(1, num)], question)
+
+    print('=' * 50)
+    print(data[user_input - 1]['name'])
+    print('=' * 50)
+    print(f"'{data[user_input - 1]['description']}")
+    print(f'Ratings: {data[user_input - 1]["rattings"]}')
+    print(f'Prep Time: {data[user_input - 1]["times"]["Preparation"]}')
+    print(f'Cooking Time: {data[user_input - 1]["times"]["Cooking"]}')
+    print(f'Difficulty: {data[user_input - 1]["difficult"]}')
+    print(f'Subcategory: {data[user_input - 1]["subcategory"]}')
+    print('-' * 50)
+    print()
+
     for lines in data:
         print('=' * 50)
         print(lines['name'])
         print('=' * 50)
-        print(f"'{lines['description']}")
+        print(f'{lines['url']}')
+        print(f"'{lines['description']}'")
         print(f'Ratings: {lines["rattings"]}')
         print(f'Prep Time: {lines["times"]["Preparation"]}')
         print(f'Cooking Time: {lines["times"]["Cooking"]}')
         print(f'Difficulty: {lines["difficult"]}')
         print(f'Subcategory: {lines["subcategory"]}')
         print('-' * 50)
+        print()
     run_app()
 
 

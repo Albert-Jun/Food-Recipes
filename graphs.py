@@ -1,7 +1,12 @@
 """
-Graphs.py
-For Graph Classes
+This Python module contains graph and vertex classes used for representing a recipe network.
+
+Vertices are used to represent various aspects of recipes such as subcategories, difficulty levels, serving sizes,
+preparation times, and individual food items.
+
+The graph class a recipe network where food items are connected based on their attributes.
 """
+
 from __future__ import annotations
 from typing import Any
 import json
@@ -20,7 +25,7 @@ class _Vertex:
     Representation Invariants:
         - self not in self.neighbours
         - all(self in u.neighbours for u in self.neighbours)
-        - self.kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times', 'food'}
+        - self.kind in {'subcategory', 'difficult', 'serves', 'times', 'food'}
     """
     item: Any
     kind: str
@@ -109,7 +114,7 @@ class Graph:
         Do nothing if the given item is already in this graph.
 
         Preconditions:
-            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times'}
+            - kind in {'subcategory', 'difficult', 'serves', 'times'}
         """
         if item not in self._vertices:
             self._vertices[item] = _Vertex(item, kind)
@@ -297,6 +302,8 @@ def build_graph(recipes_file: str) -> Graph:
 
 
 if __name__ == '__main__':
+    # import doctest
+    # doctest.testmod()
 
     import python_ta
     python_ta.check_all(config={
