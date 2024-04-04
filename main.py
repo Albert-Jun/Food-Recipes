@@ -154,7 +154,9 @@ def view_recipe(filename):
         print(f'Subcategory: {lines["subcategory"]}')
         print('-' * 50)
         print()
-    run_app()
+    wait_input = input('Enter any key to go back to main menu: ')
+    if isinstance(wait_input, str):
+        run_app()
 
 
 if __name__ == "__main__":
