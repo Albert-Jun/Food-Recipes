@@ -3,6 +3,7 @@ Main interface of the app
 """
 from typing import Any, Optional
 
+import sys
 import io
 import textwrap
 import webbrowser
@@ -55,7 +56,7 @@ class MultipleToggle:
         """
         returns the allowance of the button to be toggled
         """
-        return self.get_allowed_toggle()
+        return self.allowed_toggle
 
     def update_toggle_state(self, toggled_button: Any) -> None:
         """
@@ -797,7 +798,7 @@ def run_game() -> None:
                 elif i == 4:
                     y += 530
                 if len(rec_food[i].item) > 50:
-                    text = rec_food[i].item[40:]
+                    text = f'{rec_food[i].item[40:]} ...'
                 else:
                     text = rec_food[i].item
                 text_color = (255, 255, 255)
@@ -1104,7 +1105,7 @@ def run_game() -> None:
             pygame.quit()
             run = False
         pygame.display.update()
-    pygame.quit()
+    sys.exit()
 
 
 if __name__ == '__main__':
@@ -1117,6 +1118,6 @@ if __name__ == '__main__':
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'pygame', 'requests', 'graphs'],
         # the names (strs) of imported modules
         'allowed-io': ['run_game'],
-        'disable': ['E1101', 'C0302', 'R0914', 'R0913', 'R0902', 'E9998', 'R0912', 'R0915'],
+        'disable': [],
         'max-line-length': 120
     })
