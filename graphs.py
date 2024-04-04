@@ -114,7 +114,7 @@ class Graph:
         Do nothing if the given item is already in this graph.
 
         Preconditions:
-            - kind in {'subcategory', 'difficult', 'serves', 'nutrients', 'times'}
+            - kind in {'subcategory', 'difficult', 'serves', 'times'}
         """
         if item not in self._vertices:
             self._vertices[item] = _Vertex(item, kind)
