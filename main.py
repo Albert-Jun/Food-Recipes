@@ -5,7 +5,7 @@ Users can run the app, add recipes, view recipes, and exit the application.
 Copyright and Usage Information
 ===============================
 
-This file is Copyright (c) Aref Malekanian, [Name], [Name], [Name]
+This file is Copyright (c) Aref Malekanian, Albert Jun, Ahnaf Keenan Ardhito, Alfizza Kenaz
 """
 
 import json
