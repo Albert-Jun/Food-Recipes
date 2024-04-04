@@ -1,0 +1,17 @@
+[
+    {
+        "id": "USERADDED1",
+        "url": "https://www.taste.com.au/recipes/easy-fried-rice-3/5c89aa24-1de3-4ddc-9362-e68dfc489dc1?r=quickeasy/biccuul7",
+        "name": "Classic shepherd's pie recipe",
+        "description": "A classic British and Irish dish that’s loved the world over, shepherd’s pie is the ultimate comfort food.",
+        "rattings": 4,
+        "times": {
+            "Preparation": "10 mins",
+            "Cooking": "1 hour and 5 mins"
+        },
+        "serves": 4,
+        "difficult": "Challenging",
+        "subcategory": "Meal - Specific Recipes",
+        "maincategory": "recipes"
+    }
+]
