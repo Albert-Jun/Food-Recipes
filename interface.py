@@ -803,9 +803,12 @@ def run_game() -> None:
                 text_color = (255, 255, 255)
                 text_hover_color = (0, 0, 0)
                 rating = rec_food[i].rating
-                r = requests.get(rec_food[i].image)
-                img = io.BytesIO(r.content)
-                left_image = pygame.image.load(img)
+                try:
+                    r = requests.get(rec_food[i].image)
+                    img = io.BytesIO(r.content)
+                    left_image = pygame.image.load(img)
+                except pygame.error:
+                    left_image = pygame.image.load('assets/no_image.png')
                 try:
                     left_image = pygame.transform.smoothscale(left_image, (80, 80))
                 except ValueError:

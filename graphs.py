@@ -150,7 +150,7 @@ class Graph:
         foods = [v for v in self._vertices.values() if v.match_choices(choices)]
 
         # Ssrt the food vertices based on their rating attribute in descending order
-        foods.sort(key=lambda v: v.rating, reverse=True)
+        foods.sort(key=lambda v: (-v.rating, v.item), reverse=False)
 
         # Return the top 10 food vertices with highest ratings
         return foods[:10]
