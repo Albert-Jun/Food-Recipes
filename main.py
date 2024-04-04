@@ -118,6 +118,8 @@ def add_recipe(filename: str) -> None:
     # Save the updated data back to the JSON file
     with open(filename, 'w') as f:
         json.dump(existing_data, f, indent=4)
+
+    print()
     run_app()
 
 
@@ -137,7 +139,6 @@ def view_recipe(filename: str) -> None:
     print('=' * 50)
     print(data[user_input - 1]['name'])
     print('=' * 50)
-    print(f"'{data[user_input - 1]['url']}")
     print(f"'{data[user_input - 1]['description']}")
     print(f'Ratings: {data[user_input - 1]["rattings"]}')
     print(f'Prep Time: {data[user_input - 1]["times"]["Preparation"]}')
@@ -146,6 +147,20 @@ def view_recipe(filename: str) -> None:
     print(f'Subcategory: {data[user_input - 1]["subcategory"]}')
     print('-' * 50)
     print()
+
+    for lines in data:
+        print('=' * 50)
+        print(lines['name'])
+        print('=' * 50)
+        print(f'{lines['url']}')
+        print(f"'{lines['description']}'")
+        print(f'Ratings: {lines["rattings"]}')
+        print(f'Prep Time: {lines["times"]["Preparation"]}')
+        print(f'Cooking Time: {lines["times"]["Cooking"]}')
+        print(f'Difficulty: {lines["difficult"]}')
+        print(f'Subcategory: {lines["subcategory"]}')
+        print('-' * 50)
+        print()
     run_app()
 
 
