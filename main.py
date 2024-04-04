@@ -45,9 +45,9 @@ def run_app():
     if user_input == 1:
         interface.run_game()
     elif user_input == 2:
-        add_recipe('recipes_user_added.json')
+        add_recipe('recipe_book')
     elif user_input == 3:
-        view_recipe('recipes_user_added.json')
+        view_recipe('recipe_book')
     else:
         return None
 
