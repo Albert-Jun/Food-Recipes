@@ -43,4 +43,22 @@
         "dish_type": "Vegetarian slow cooker",
         "maincategory": "recipes"
     },
+    {
+        "id": "USERADDED2",
+        "url": "turkey",
+        "name": "turkey",
+        "description": "turkey",
+        "author": "-",
+        "rattings": 2,
+        "times": {
+            "Preparation": "3",
+            "Cooking": "3"
+        },
+        "serves": 2,
+        "difficult": 2,
+        "vote_count": 0,
+        "subcategory": "Vegan Recipes",
+        "dish_type": "Vegan Recipes",
+        "maincategory": "recipes"
+    }
 ]

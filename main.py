@@ -25,7 +25,6 @@ def valid_int_input(expected_int: list, input_quest: str) -> int:
                 raise ValueError
             run = False
         except ValueError:
-            print(f'{input_quest}')
             print('INVALID INPUT!')
     return actual_input
 
