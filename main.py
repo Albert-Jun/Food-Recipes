@@ -142,12 +142,4 @@ def view_recipe(filename: str) -> None:
 
 
 if __name__ == "__main__":
-    # run_app()
-
-    import python_ta
-
-    python_ta.check_all(config={
-        'extra-imports': ['json'],
-        'allowed-io': ['build_graph'],
-        'max-line-length': 120
-    })
+    run_app()
