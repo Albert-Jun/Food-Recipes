@@ -140,6 +140,20 @@ def view_recipe(filename):
     print(f'Subcategory: {data[user_input - 1]["subcategory"]}')
     print('-' * 50)
     print()
+
+    for lines in data:
+        print('=' * 50)
+        print(lines['name'])
+        print('=' * 50)
+        print(f'{lines['url']}')
+        print(f"'{lines['description']}'")
+        print(f'Ratings: {lines["rattings"]}')
+        print(f'Prep Time: {lines["times"]["Preparation"]}')
+        print(f'Cooking Time: {lines["times"]["Cooking"]}')
+        print(f'Difficulty: {lines["difficult"]}')
+        print(f'Subcategory: {lines["subcategory"]}')
+        print('-' * 50)
+        print()
     run_app()
 
 
