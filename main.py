@@ -37,7 +37,7 @@ def run_app():
     print('=' * 50)
     print('FOOD MOOD')
     print('=' * 50)
-    print('1. Run app')
+    print('1. Run App')
     print('2. Add Recipe')
     print('3. View Recipe')
     print('4. EXIT')
