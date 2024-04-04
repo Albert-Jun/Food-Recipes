@@ -125,18 +125,27 @@ def view_recipe(filename: str) -> None:
     """View the current user added recipes"""
     with open(filename, 'r') as f:
         data = json.load(f)
-    for lines in data:
-        print('=' * 50)
-        print(lines['name'])
-        print('=' * 50)
-        print(f'{lines['url']}')
-        print(f"'{lines['description']}")
-        print(f'Ratings: {lines["rattings"]}')
-        print(f'Prep Time: {lines["times"]["Preparation"]}')
-        print(f'Cooking Time: {lines["times"]["Cooking"]}')
-        print(f'Difficulty: {lines["difficult"]}')
-        print(f'Subcategory: {lines["subcategory"]}')
-        print('-' * 50)
+
+    num = 1
+    for line in data:
+        print(f'{num}) {line['name']}')
+        num += 1
+
+    question = f'Choose the recipe number you would like to view (1-{num-1}):'
+    user_input = valid_int_input([x for x in range(1, num)], question)
+
+    print('=' * 50)
+    print(data[user_input - 1]['name'])
+    print('=' * 50)
+    print(f"'{data[user_input - 1]['url']}")
+    print(f"'{data[user_input - 1]['description']}")
+    print(f'Ratings: {data[user_input - 1]["rattings"]}')
+    print(f'Prep Time: {data[user_input - 1]["times"]["Preparation"]}')
+    print(f'Cooking Time: {data[user_input - 1]["times"]["Cooking"]}')
+    print(f'Difficulty: {data[user_input - 1]["difficult"]}')
+    print(f'Subcategory: {data[user_input - 1]["subcategory"]}')
+    print('-' * 50)
+    print()
     run_app()
 
 
