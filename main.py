@@ -111,6 +111,8 @@ def add_recipe(filename):
     # Save the updated data back to the JSON file
     with open(filename, 'w') as f:
         json.dump(existing_data, f, indent=4)
+
+    print()
     run_app()
 
 
@@ -130,7 +132,6 @@ def view_recipe(filename):
     print('=' * 50)
     print(data[user_input - 1]['name'])
     print('=' * 50)
-    print(f"'{data[user_input - 1]['url']}")
     print(f"'{data[user_input - 1]['description']}")
     print(f'Ratings: {data[user_input - 1]["rattings"]}')
     print(f'Prep Time: {data[user_input - 1]["times"]["Preparation"]}')
