@@ -1000,7 +1000,7 @@ def run_game() -> None:
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False  # Set run to False to exit the main loop
+                run = False  # Set run to False, to exit the main loop
 
         active_screen = screen_manager.get_active_screen()
 
