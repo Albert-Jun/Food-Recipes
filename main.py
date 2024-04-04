@@ -12,7 +12,7 @@ import json
 import interface
 
 
-def valid_int_input(expected_int: list, input_quest: str):
+def valid_int_input(expected_int: list, input_quest: str) -> int:
     """
     Checks if the expected input is found
     """
@@ -30,7 +30,7 @@ def valid_int_input(expected_int: list, input_quest: str):
     return actual_input
 
 
-def run_app():
+def run_app() -> None:
     """
     runs the main 'FOOD MOOD' app
     """
@@ -45,31 +45,38 @@ def run_app():
     user_input = valid_int_input(temp_list, 'Enter a number (1 - 4): ')
     if user_input == 1:
         interface.run_game()
+        return None
     elif user_input == 2:
-        add_recipe('recipe_book')
+        add_recipe('recipe_book.json')
+        return None
     elif user_input == 3:
-        view_recipe('recipe_book')
+        view_recipe('recipe_book.json')
+        return None
     else:
         return None
 
 
-def add_recipe_ui(filename):
+def add_recipe_ui(filename: str) -> dict:
     """
     User interface instance of add recipe.
     """
     with open(filename, 'r') as f:
         data = json.load(f)
-    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}', 'name': input('Enter a valid name of the food: '),
+    temp_dict = {'id': f'USERADDED{int(data[-1]['id'][-1]) + 1}',
+                 'url': input('Enter a valid url: '),
+                 'name': input('Enter a valid name of the food: '),
                  'description': input('Enter a valid description of the food: '), 'author': '-',
                  'rattings': valid_int_input([1, 2, 3, 4, 5], 'Enter a valid rating of recipe (1-5): ')}
     prep_time = input('Enter the preparation time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     cook_time = input('Enter the cooking time of the food (i.e. 10 mins, 1 hr and 10 mins): ')
     temp_dict['times'] = {'Preparation': prep_time, 'Cooking': cook_time}
     serves = ['1 ~ 2 Serves', '2 ~ 4 Serves', '5+ Serves']
+
     for i in range(len(serves)):
         print(f'{i + 1}. {serves[i]}')
     temp_dict['serves'] = valid_int_input([1, 2, 3], 'Choose one that applies(1 - 3): ')
     difficulty = ['Easy', 'Challenging']
+
     for i in range(len(difficulty)):
         print(f'{i + 1}. {difficulty[i]}')
     difficulty_input = valid_int_input([1, 2], 'Choose difficulty(1/2): ')
@@ -90,7 +97,7 @@ def add_recipe_ui(filename):
     return temp_dict
 
 
-def add_recipe(filename):
+def add_recipe(filename: str) -> None:
     """
     This function adds a custom recipe to the recipes file
 
@@ -115,7 +122,7 @@ def add_recipe(filename):
     run_app()
 
 
-def view_recipe(filename):
+def view_recipe(filename: str) -> None:
     """View the current user added recipes"""
     with open(filename, 'r') as f:
         data = json.load(f)
@@ -123,6 +130,7 @@ def view_recipe(filename):
         print('=' * 50)
         print(lines['name'])
         print('=' * 50)
+        print(f'{lines['url']}')
         print(f"'{lines['description']}")
         print(f'Ratings: {lines["rattings"]}')
         print(f'Prep Time: {lines["times"]["Preparation"]}')
@@ -134,4 +142,12 @@ def view_recipe(filename):
 
 
 if __name__ == "__main__":
-    run_app()
+    # run_app()
+
+    import python_ta
+
+    python_ta.check_all(config={
+        'extra-imports': ['json'],
+        'allowed-io': ['build_graph'],
+        'max-line-length': 120
+    })

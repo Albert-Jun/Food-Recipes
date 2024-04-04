@@ -797,7 +797,7 @@ def run_game() -> None:
                 elif i == 4:
                     y += 530
                 if len(rec_food[i].item) > 50:
-                    text = f'{rec_food[i].item[40:]} ...'
+                    text = f'{rec_food[i].item[50:]} ...'
                 else:
                     text = rec_food[i].item
                 text_color = (255, 255, 255)
@@ -1115,7 +1115,6 @@ if __name__ == '__main__':
 
     python_ta.check_all(config={
         'extra-imports': ['textwrap', 'webbrowser', 'io', 'requests', 'pygame', 'graphs'],
-        # the names (strs) of imported modules
         'allowed-io': ['untoggle', 'draw', 'run', 'run_game'],
         'max-line-length': 120
     })
